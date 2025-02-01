@@ -43,7 +43,7 @@ pygame.init()
 
 # Set up the display
 width, height = 320, 240
-screen = pygame.display.set_mode((width, height))
+screen = pygame.display.set_mode((width, height),pygame.FULLSCREEN)
 pygame.display.set_caption('NVIDIA Stock Price Display')
 
 image = pygame.image.load('DisplayTest.png')
@@ -74,6 +74,7 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             # When mouse is clicked, set last_update to 10 minutes in the past
             last_update = time.time() - 600  # 600 seconds = 10 minutes    for event in pygame.event.get():
+            running = False
 
     # Check if 5 minutes have passed
     if time.time() - last_update > 600:  # 300 seconds = 5 minutes
