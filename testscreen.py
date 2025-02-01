@@ -22,7 +22,8 @@ BLUE = (200, 200, 255)
 nvidia_ticker = "NVDA"
 
 # Font setup
-font = pygame.font.Font(None, 36)
+titlefont = pygame.font.Font(None, 32)
+datafont = pygame.font.Font(None, 24)
 
 # Last update time
 last_update = time.time()
@@ -47,10 +48,14 @@ while running:
 
     # Drawing
     screen.blit(image, (0, 0))
-    price_text = font.render(f"NVDA: ${current_price:.2f}", True, BLUE)
-    screen.blit(price_text, (50,50))
-    price_text = font.render(f"TSLA: ${current_price2:.2f}", True, BLUE)
-    screen.blit(price_text, (50,100))
+    price_text = titlefont.render(f"Ship Prices", True, BLUE)
+    screen.blit(price_text, (40,30))
+    price_text = datafont.render(f"Cutlass Black 2.17M", True, BLUE)
+    screen.blit(price_text, (40,60))
+    price_text = datafont.render(f"Hull A 1.82M", True, BLUE)
+    screen.blit(price_text, (40,85))
+    price_text = datafont.render(f"Cutter 0.62M", True, BLUE)
+    screen.blit(price_text, (40,110))
 
     pygame.display.flip()
 
