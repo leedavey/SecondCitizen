@@ -13,7 +13,7 @@ pygame.display.set_caption('NVIDIA Stock Price Display')
 
 image = pygame.image.load('DisplayTest.png')
 # Scale the image to fit the window if necessary
-image = pygame.transform.scale(image, (width, height))
+#image = pygame.transform.scale(image, (width, height))
 
 # Colors
 WHITE = (255, 255, 255)
