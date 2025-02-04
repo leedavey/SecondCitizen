@@ -51,10 +51,7 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.FINGERDOWN:
-            # Treat touch as mouse click
-            print(f"Touch down at: {event.x}, {event.y}")
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.FINGERDOWN or event.type == pygame.MOUSEBUTTONDOWN:
             mousex, mousey = event.pos
             # When mouse is clicked, set last_update to 10 minutes in the past
             if mousey < 100 and mousex > 500:
