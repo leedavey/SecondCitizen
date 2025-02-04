@@ -51,15 +51,17 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.FINGERDOWN:
+            # Treat touch as mouse click
+            print(f"Touch down at: {event.x}, {event.y}")
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mousex, mousey = event.pos
             # When mouse is clicked, set last_update to 10 minutes in the past
             if mousey < 100 and mousex > 500:
                 running = False
             else:
-                if drawscreen == 1:
-                    drawscreen = 2
-                else:
+                drawscreen += 1
+                if drawscreen > 3:
                     drawscreen = 1
 
     # Check if 5 minutes have passed
@@ -74,19 +76,24 @@ while running:
     if drawscreen == 1:
         price_text = titlefont.render(f"Ship Prices", True, BLUE)
         screen.blit(price_text, (hoffset,voffset))
-        price_text = datafont.render(f"Cutlass Black 2.17M", True, BLUE)
+        price_text = datafont.render(f"Freelancer MAX 4.252M", True, BLUE)
         screen.blit(price_text, (hoffset,voffset*2))
-        price_text = datafont.render(f"Hull A 1.82M", True, BLUE)
+        price_text = datafont.render(f"Cutlass Black 2.116M", True, BLUE)
         screen.blit(price_text, (hoffset,voffset*3))
-        price_text = datafont.render(f"Cutter 0.62M", True, BLUE)
+        price_text = datafont.render(f"Hull A 1.701M", True, BLUE)
         screen.blit(price_text, (hoffset,voffset*4))
-    else:
+        price_text = datafont.render(f"Cutter 0.635M", True, BLUE)
+        screen.blit(price_text, (hoffset,voffset*5))
+    elif drawscreen == 2:
         price_text = titlefont.render(f"Salvage", True, BLUE)
         screen.blit(price_text, (hoffset,voffset))
         price_text = datafont.render(f"RMC - Orison: 10,800 aUEC", True, BLUE)
         screen.blit(price_text, (hoffset,voffset*2))
         price_text = datafont.render(f"RMC - Area 18: 8,700 aUEC", True, BLUE)
         screen.blit(price_text, (hoffset,voffset*3))
+    elif drawscreen == 3:
+        price_text = titlefont.render(f"Mining Prices", True, BLUE)
+        screen.blit(price_text, (hoffset,voffset))
 
 
     # Increase alpha for fade effect
