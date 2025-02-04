@@ -45,15 +45,22 @@ fade_speed = 5  # How quickly to fade out (0-255 per frame)
 alpha = 255  # Start with fully transparent
 
 running = True
+drawscreen = 1
 
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
+            mousex, mousey = event.pos
             # When mouse is clicked, set last_update to 10 minutes in the past
-            last_update = time.time() - 600  # 600 seconds = 10 minutes    for event in pygame.event.get():
-            running = False
+            if mousey < 100 and mousex > 500:
+                running = False
+            else:
+                if drawscreen == 1:
+                    drawscreen = 2
+                else:
+                    drawscreen = 1
 
     # Check if 5 minutes have passed
     if time.time() - last_update > 600:  # 300 seconds = 5 minutes
@@ -64,14 +71,23 @@ while running:
     hoffset = 60
     voffset = 55
     screen.blit(image, (0, 0))
-    price_text = titlefont.render(f"Ship Prices", True, BLUE)
-    screen.blit(price_text, (hoffset,voffset))
-    price_text = datafont.render(f"Cutlass Black 2.17M", True, BLUE)
-    screen.blit(price_text, (hoffset,voffset*2))
-    price_text = datafont.render(f"Hull A 1.82M", True, BLUE)
-    screen.blit(price_text, (hoffset,voffset*3))
-    price_text = datafont.render(f"Cutter 0.62M", True, BLUE)
-    screen.blit(price_text, (hoffset,voffset*4))
+    if drawscreen == 1:
+        price_text = titlefont.render(f"Ship Prices", True, BLUE)
+        screen.blit(price_text, (hoffset,voffset))
+        price_text = datafont.render(f"Cutlass Black 2.17M", True, BLUE)
+        screen.blit(price_text, (hoffset,voffset*2))
+        price_text = datafont.render(f"Hull A 1.82M", True, BLUE)
+        screen.blit(price_text, (hoffset,voffset*3))
+        price_text = datafont.render(f"Cutter 0.62M", True, BLUE)
+        screen.blit(price_text, (hoffset,voffset*4))
+    else:
+        price_text = titlefont.render(f"Salvage", True, BLUE)
+        screen.blit(price_text, (hoffset,voffset))
+        price_text = datafont.render(f"RMC - Orison: 10,800 aUEC", True, BLUE)
+        screen.blit(price_text, (hoffset,voffset*2))
+        price_text = datafont.render(f"RMC - Area 18: 8,700 aUEC", True, BLUE)
+        screen.blit(price_text, (hoffset,voffset*3))
+
 
     # Increase alpha for fade effect
     alpha -= fade_speed
