@@ -81,6 +81,7 @@ while running:
     # Drawing
 #    pygame.mouse.set_visible(False)
     if not(blackscreen):
+        pygame.mouse.set_visible(True)
         hoffset = 60
         voffset = 55
         screen.blit(image, (0, 0))
@@ -118,6 +119,7 @@ while running:
         # Draw the fade surface over the screen
         screen.blit(square_surface, square_rect)
     else:
+        pygame.mouse.set_visible(False)
         screen.fill(BLACK)
 
     # Update the display
