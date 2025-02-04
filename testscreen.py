@@ -51,6 +51,7 @@ def processClick(x,y):
     global drawscreen
     global running
 
+    print(f"Touch down at: {x}, {y}")
     if y < 100 and x > 500:
         running = False
     else:
@@ -64,7 +65,6 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.FINGERDOWN:
-            print(f"Touch down at: {event.x}, {event.y}")
             processClick(event.x, event.y)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mousex, mousey = event.pos
