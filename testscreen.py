@@ -65,7 +65,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.FINGERDOWN:
-            processClick(event.x, event.y)
+            processClick(event.x*width, event.y*height)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mousex, mousey = event.pos
             processClick(mousex, mousey)
