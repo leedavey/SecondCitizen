@@ -47,19 +47,28 @@ alpha = 255  # Start with fully transparent
 running = True
 drawscreen = 1
 
+def processClick(x,y):
+    global drawscreen
+    global running
+
+    if y < 100 and x > 500:
+        running = False
+    else:
+        drawscreen += 1
+        if drawscreen > 3:
+            drawscreen = 1
+
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.FINGERDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.FINGERDOWN:
+            print(f"Touch down at: {event.x}, {event.y}")
+            processClick(event.x, event.y)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
             mousex, mousey = event.pos
-            # When mouse is clicked, set last_update to 10 minutes in the past
-            if mousey < 100 and mousex > 500:
-                running = False
-            else:
-                drawscreen += 1
-                if drawscreen > 3:
-                    drawscreen = 1
+            processClick(mousex, mousey)
 
     # Check if 5 minutes have passed
     if time.time() - last_update > 600:  # 300 seconds = 5 minutes
