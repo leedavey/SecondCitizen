@@ -46,14 +46,18 @@ alpha = 255  # Start with fully transparent
 
 running = True
 drawscreen = 1
+blackscreen = False
 
 def processClick(x,y):
     global drawscreen
     global running
+    global blackscreen
 
-    print(f"Touch down at: {x}, {y}")
+#    print(f"Touch down at: {x}, {y}")
     if y < 100 and x > 500:
         running = False
+    elif y < 100 and x < 100:
+        blackscreen = not(blackscreen)
     else:
         drawscreen += 1
         if drawscreen > 3:
@@ -76,42 +80,45 @@ while running:
 
     # Drawing
 #    pygame.mouse.set_visible(False)
-    hoffset = 60
-    voffset = 55
-    screen.blit(image, (0, 0))
-    if drawscreen == 1:
-        price_text = titlefont.render(f"Ship Prices", True, BLUE)
-        screen.blit(price_text, (hoffset,voffset))
-        price_text = datafont.render(f"Freelancer MAX 4.252M", True, BLUE)
-        screen.blit(price_text, (hoffset,voffset*2))
-        price_text = datafont.render(f"Cutlass Black 2.116M", True, BLUE)
-        screen.blit(price_text, (hoffset,voffset*3))
-        price_text = datafont.render(f"Hull A 1.701M", True, BLUE)
-        screen.blit(price_text, (hoffset,voffset*4))
-        price_text = datafont.render(f"Cutter 0.635M", True, BLUE)
-        screen.blit(price_text, (hoffset,voffset*5))
-    elif drawscreen == 2:
-        price_text = titlefont.render(f"Salvage", True, BLUE)
-        screen.blit(price_text, (hoffset,voffset))
-        price_text = datafont.render(f"RMC - Orison: 10,800 aUEC", True, BLUE)
-        screen.blit(price_text, (hoffset,voffset*2))
-        price_text = datafont.render(f"RMC - Area 18: 8,700 aUEC", True, BLUE)
-        screen.blit(price_text, (hoffset,voffset*3))
-    elif drawscreen == 3:
-        price_text = titlefont.render(f"Mining Prices", True, BLUE)
-        screen.blit(price_text, (hoffset,voffset))
+    if not(blackscreen):
+        hoffset = 60
+        voffset = 55
+        screen.blit(image, (0, 0))
+        if drawscreen == 1:
+            price_text = titlefont.render(f"Ship Prices", True, BLUE)
+            screen.blit(price_text, (hoffset,voffset))
+            price_text = datafont.render(f"Freelancer MAX 4.252M", True, BLUE)
+            screen.blit(price_text, (hoffset,voffset*2))
+            price_text = datafont.render(f"Cutlass Black 2.116M", True, BLUE)
+            screen.blit(price_text, (hoffset,voffset*3))
+            price_text = datafont.render(f"Hull A 1.701M", True, BLUE)
+            screen.blit(price_text, (hoffset,voffset*4))
+            price_text = datafont.render(f"Cutter 0.635M", True, BLUE)
+            screen.blit(price_text, (hoffset,voffset*5))
+        elif drawscreen == 2:
+            price_text = titlefont.render(f"Salvage", True, BLUE)
+            screen.blit(price_text, (hoffset,voffset))
+            price_text = datafont.render(f"RMC - Orison: 10,800 aUEC", True, BLUE)
+            screen.blit(price_text, (hoffset,voffset*2))
+            price_text = datafont.render(f"RMC - Area 18: 8,700 aUEC", True, BLUE)
+            screen.blit(price_text, (hoffset,voffset*3))
+        elif drawscreen == 3:
+            price_text = titlefont.render(f"Mining Prices", True, BLUE)
+            screen.blit(price_text, (hoffset,voffset))
 
 
-    # Increase alpha for fade effect
-    alpha -= fade_speed
-    if alpha < -255:  # Once we've faded out completely
-        alpha = 255  # Cap it at 255
+        # Increase alpha for fade effect
+        alpha -= fade_speed
+        if alpha < -255:  # Once we've faded out completely
+            alpha = 255  # Cap it at 255
 
-    # Set the alpha of the fade surface
-    square_surface.set_alpha(abs(alpha))
+        # Set the alpha of the fade surface
+        square_surface.set_alpha(abs(alpha))
 
-    # Draw the fade surface over the screen
-    screen.blit(square_surface, square_rect)
+        # Draw the fade surface over the screen
+        screen.blit(square_surface, square_rect)
+    else:
+        screen.fill(BLACK)
 
     # Update the display
     pygame.display.flip()
