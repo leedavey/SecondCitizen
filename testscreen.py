@@ -22,6 +22,27 @@ BLACK = (0, 0, 0)
 BLUE = (200, 200, 255)
 BLUE_UI = (100, 100, 255)
 
+salvage_data = [
+    ("RMC - Orison", "10,800"),
+    ("RMC - Area 18", "8,500"),
+    ("RMC - Lorville", "8,500"),
+    ("RMC - New Babbage", "8,500")
+]
+
+ship_data = [
+    ("Freelancer MAX", "4.252M"),
+    ("Cutlass Black", "2.116M"),
+    ("Hull A", "1.701M"),
+    ("Cutter", "0.635M")
+]
+
+ore_data = [
+    ("Gold", "102"),
+    ("Beryl", "50"),
+    ("Copper", "40"),
+    ("Laranite", "120")
+]
+
 # Font setup
 titlefont = pygame.font.Font(None, 60)
 datafont = pygame.font.Font(None, 48)
@@ -63,6 +84,20 @@ def processClick(x,y):
         if drawscreen > 3:
             drawscreen = 1
 
+def displayValuePairScreen(title, names_values):
+    price_text = titlefont.render(title, True, BLUE)
+    screen.blit(price_text, (hoffset,voffset))
+
+    # Display names and values
+    for i, (name, value) in enumerate(names_values):
+        # Render text for name
+        name_text = datafont.render(name, True, BLUE)
+        # Render text for value
+        value_text = datafont.render(value, True, BLUE)
+
+        # Position the texts on the screen
+        screen.blit(name_text, (hoffset, voffset + voffset + i * 50))  # Names on the left
+        screen.blit(value_text, (400, voffset + voffset + i * 50))  # Values on the right
 
 while running:
     for event in pygame.event.get():
@@ -86,26 +121,11 @@ while running:
         voffset = 55
         screen.blit(image, (0, 0))
         if drawscreen == 1:
-            price_text = titlefont.render(f"Ship Prices", True, BLUE)
-            screen.blit(price_text, (hoffset,voffset))
-            price_text = datafont.render(f"Freelancer MAX 4.252M", True, BLUE)
-            screen.blit(price_text, (hoffset,voffset*2))
-            price_text = datafont.render(f"Cutlass Black 2.116M", True, BLUE)
-            screen.blit(price_text, (hoffset,voffset*3))
-            price_text = datafont.render(f"Hull A 1.701M", True, BLUE)
-            screen.blit(price_text, (hoffset,voffset*4))
-            price_text = datafont.render(f"Cutter 0.635M", True, BLUE)
-            screen.blit(price_text, (hoffset,voffset*5))
+            displayValuePairScreen("Ship Prices", ship_data)
         elif drawscreen == 2:
-            price_text = titlefont.render(f"Salvage", True, BLUE)
-            screen.blit(price_text, (hoffset,voffset))
-            price_text = datafont.render(f"RMC - Orison: 10,800 aUEC", True, BLUE)
-            screen.blit(price_text, (hoffset,voffset*2))
-            price_text = datafont.render(f"RMC - Area 18: 8,700 aUEC", True, BLUE)
-            screen.blit(price_text, (hoffset,voffset*3))
+            displayValuePairScreen("Salvage", salvage_data)
         elif drawscreen == 3:
-            price_text = titlefont.render(f"Mining Prices", True, BLUE)
-            screen.blit(price_text, (hoffset,voffset))
+            displayValuePairScreen("Mining Prices", ore_data)
 
 
         # Increase alpha for fade effect
