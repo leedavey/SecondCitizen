@@ -30,17 +30,18 @@ salvage_data = [
 ]
 
 ship_data = [
-    ("Freelancer MAX", "4.252M"),
-    ("Cutlass Black", "2.116M"),
-    ("Hull A", "1.701M"),
-    ("Cutter", "0.635M")
+    ("Freelancer MAX", "4,252K"),
+    ("Cutlass Black", "2,116K"),
+    ("Hull A", "1,701K"),
+    ("Cutter", "635K")
 ]
 
 ore_data = [
-    ("Gold", "102"),
-    ("Beryl", "50"),
-    ("Copper", "40"),
-    ("Laranite", "120")
+    ("Gold", "2672"),
+    ("Beryl", "1148"),
+    ("Copper", "145"),
+    ("Laranite", "1172"),
+    ("Hadanite", "437k")
 ]
 
 # Font setup
@@ -55,10 +56,9 @@ clock = pygame.time.Clock()
 
 # Create a surface for the square with alpha
 square_surface = pygame.Surface((100, 100), pygame.SRCALPHA)
-
 pygame.draw.rect(square_surface, GREEN, (0, 0, 16, 16))  # Green square
-# Position the square in the middle of the screen
 
+# Position the square in the middle of the screen
 square_rect = square_surface.get_rect(center=(308,473))
 
 # Fade variables
@@ -66,8 +66,10 @@ fade_speed = 5  # How quickly to fade out (0-255 per frame)
 alpha = 255  # Start with fully transparent
 
 running = True
-drawscreen = 1
+drawscreen = 4
 blackscreen = False
+
+animAngle = 3.0
 
 def processClick(x,y):
     global drawscreen
@@ -81,8 +83,16 @@ def processClick(x,y):
         blackscreen = not(blackscreen)
     else:
         drawscreen += 1
-        if drawscreen > 3:
+        if drawscreen > 4:
             drawscreen = 1
+
+def menuScreen():
+    pygame.draw.rect(screen, BLUE, [hoffset,voffset,300,120])
+    price_text = titlefont.render("Locations", True, WHITE)
+    screen.blit(price_text, (hoffset,voffset))
+    pygame.draw.rect(screen, BLUE, [hoffset,voffset+125,300,120])
+    pygame.draw.rect(screen, BLUE, [hoffset,voffset+250,300,120])
+
 
 def displayValuePairScreen(title, names_values):
     price_text = titlefont.render(title, True, BLUE)
@@ -126,18 +136,24 @@ while running:
             displayValuePairScreen("Salvage", salvage_data)
         elif drawscreen == 3:
             displayValuePairScreen("Mining Prices", ore_data)
+        elif drawscreen == 4:
+            menuScreen()
 
 
+        # FLAIR!!!!
         # Increase alpha for fade effect
         alpha -= fade_speed
         if alpha < -255:  # Once we've faded out completely
             alpha = 255  # Cap it at 255
-
         # Set the alpha of the fade surface
         square_surface.set_alpha(abs(alpha))
-
         # Draw the fade surface over the screen
         screen.blit(square_surface, square_rect)
+        screen.blit(square_surface, square_surface.get_rect(center=(252,473)))
+#        pygame.draw.arc(screen, BLUE, [750,400,50,50], animAngle, animAngle+1, 4)
+#        pygame.draw.rect(screen, GREEN, [200,100,10,10])
+        animAngle += 0.1
+
     else:
         pygame.mouse.set_visible(False)
         screen.fill(BLACK)
