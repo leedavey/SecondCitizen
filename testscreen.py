@@ -12,6 +12,7 @@ screen = pygame.display.set_mode((width, height),pygame.FULLSCREEN)
 pygame.display.set_caption('Test Screen Display')
 
 image = pygame.image.load('DisplayTest.png')
+basicButton = pygame.image.load('BasicButton.png')
 # Scale the image to fit the window if necessary
 image = pygame.transform.scale(image, (width, height))
 
@@ -87,11 +88,14 @@ def processClick(x,y):
             drawscreen = 1
 
 def menuScreen():
-    pygame.draw.rect(screen, BLUE, [hoffset,voffset,300,120])
     price_text = titlefont.render("Locations", True, WHITE)
-    screen.blit(price_text, (hoffset,voffset))
-    pygame.draw.rect(screen, BLUE, [hoffset,voffset+125,300,120])
-    pygame.draw.rect(screen, BLUE, [hoffset,voffset+250,300,120])
+    screen.blit(price_text, (hoffset+10,voffset-10))
+    screen.blit(basicButton, (hoffset+10, voffset+40))
+    screen.blit(basicButton, (hoffset+10, voffset+200))
+    screen.blit(basicButton, (hoffset+10+210, voffset+40))
+    screen.blit(basicButton, (hoffset+10+210, voffset+200))
+    screen.blit(basicButton, (hoffset+10+210+210, voffset+40))
+    screen.blit(basicButton, (hoffset+10+210+210, voffset+200))
 
 
 def displayValuePairScreen(title, names_values):
