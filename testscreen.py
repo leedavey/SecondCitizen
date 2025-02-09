@@ -72,26 +72,39 @@ blackscreen = False
 
 animAngle = 3.0
 
+def processClickMenu(x, y):
+    global drawscreen
+    rect = pygame.Rect(hoffset + 10, voffset + 40, 200, 150)
+    if rect.collidepoint(x,y):
+        drawscreen += 1
+        if drawscreen > 4:
+            drawscreen = 1
+
+
 def processClick(x,y):
     global drawscreen
     global running
     global blackscreen
 
-#    print(f"Touch down at: {x}, {y}")
+    # top clicks
     if y < 100 and x > 500:
         running = False
     elif y < 100 and x < 100:
         blackscreen = not(blackscreen)
-    else:
+    # bottom right click
+    elif y > 460 and x > 700:
         drawscreen += 1
         if drawscreen > 4:
             drawscreen = 1
+    else:
+        if drawscreen == 4:
+            processClickMenu(x,y)
 
 def menuScreen():
     textoffset = 15
     hor_offset = hoffset + 10
     ver_offset = voffset + 40
-    price_text = titlefont.render("Locations", True, WHITE)
+    price_text = titlefont.render("Locations", True, BLUE)
     screen.blit(price_text, (hor_offset,voffset-10))
     optionsfont = pygame.font.Font(None, 32)
 
