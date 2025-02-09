@@ -88,21 +88,32 @@ def processClick(x,y):
             drawscreen = 1
 
 def menuScreen():
+    textoffset = 15
+    hor_offset = hoffset + 10
+    ver_offset = voffset + 40
     price_text = titlefont.render("Locations", True, WHITE)
-    screen.blit(price_text, (hoffset+10,voffset-10))
+    screen.blit(price_text, (hor_offset,voffset-10))
+    optionsfont = pygame.font.Font(None, 32)
 
     area18 = pygame.image.load('Area18.png')
-    screen.blit(area18, (hoffset+10, voffset+40))
-    screen.blit(basicButton, (hoffset+10, voffset+40))
+    options_text = optionsfont.render("Area 18", True, WHITE)
+    screen.blit(area18, (hor_offset, ver_offset))
+    screen.blit(options_text, (hor_offset+textoffset,ver_offset+textoffset))
+    screen.blit(basicButton, (hor_offset, ver_offset))
 
     area18 = pygame.image.load('Orison.png')
-    screen.blit(area18, (hoffset+10, voffset+200))
-    screen.blit(basicButton, (hoffset+10, voffset+200))
+    options_text = optionsfont.render("Orison", True, WHITE)
+    screen.blit(area18, (hor_offset, ver_offset+160))
+    screen.blit(options_text, (hor_offset+textoffset,ver_offset+160+textoffset))
+    screen.blit(basicButton, (hor_offset, ver_offset+160))
 
-    screen.blit(basicButton, (hoffset+10+210, voffset+40))
-    screen.blit(basicButton, (hoffset+10+210, voffset+200))
-    screen.blit(basicButton, (hoffset+10+210+210, voffset+40))
-    screen.blit(basicButton, (hoffset+10+210+210, voffset+200))
+    #column 2
+    screen.blit(basicButton, (hor_offset+210, ver_offset))
+    screen.blit(basicButton, (hor_offset+210, ver_offset+160))
+
+    # column 3
+    screen.blit(basicButton, (hor_offset+210+210, ver_offset))
+    screen.blit(basicButton, (hor_offset+210+210, ver_offset+160))
 
 
 def displayValuePairScreen(title, names_values):
