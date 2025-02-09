@@ -92,7 +92,7 @@ def processClick(x,y):
     elif y < 100 and x < 100:
         blackscreen = not(blackscreen)
     # bottom right click
-    elif y > 440 and x > 720:
+    elif y > 420 and x > 700:
         drawscreen += 1
         if drawscreen > 4:
             drawscreen = 1
