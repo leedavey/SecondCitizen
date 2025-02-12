@@ -5,6 +5,8 @@ import time
 
 # Initialize Pygame
 pygame.init()
+pygame.mixer.init()
+sound = pygame.mixer.Sound('ComputerBeep.wav')
 
 # Set up the display
 width, height = 800, 480
@@ -92,7 +94,8 @@ def processClick(x,y):
     elif y < 100 and x < 100:
         blackscreen = not(blackscreen)
     # bottom right click
-    elif y > 420 and x > 700:
+    elif y > 400 and x > 700:
+        sound.play()
         drawscreen += 1
         if drawscreen > 4:
             drawscreen = 1
