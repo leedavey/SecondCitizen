@@ -10,6 +10,11 @@ BLACK = (0, 0, 0)
 BLUE = (200, 200, 255)
 BLUE_UI = (100, 100, 255)
 
+
+# Popup modal
+POPUPACTIVE = False
+popupimg = pygame.image.load('Area18Map.png')
+
 # Initialize Pygame
 pygame.init()
 pygame.mixer.init()
@@ -24,6 +29,13 @@ image = pygame.image.load('DisplayTest.png')
 basicButton = pygame.image.load('BasicButtonTrans.png')
 # Scale the image to fit the window if necessary
 image = pygame.transform.scale(image, (width, height))
+
+main_menu_data = [
+    ("Locations", "10,800"),
+    ("Mining", "8,500"),
+    ("Salvage", "8,500"),
+    ("Ship Sales", "8,500")
+]
 
 salvage_data = [
     ("RMC - Orison", "10,800"),
@@ -74,34 +86,58 @@ blackscreen = False
 
 animAngle = 3.0
 
+menuShowPic = False
+
+def initPopup():
+    global popupimg
+    global POPUPACTIVE
+    popupimg = pygame.image.load('Area18Map700.png')
+    POPUPACTIVE = True
+
+def showPopup():
+    global screen
+    screen.blit(popupimg, (50,20))
+
+def popupClick(x,y):
+    global POPUPACTIVE
+    POPUPACTIVE = False
+
 def processClickMenu(x, y):
     global drawscreen
+    global menuShowPic
+
+    if y < 100 and x > 500:
+        running = False
+
     rect = pygame.Rect(hoffset + 10, voffset + 40, 200, 150)
     if rect.collidepoint(x,y):
-        drawscreen += 1
-        if drawscreen > 4:
-            drawscreen = 1
-
+        sound.play()
+        initPopup()
 
 def processClick(x,y):
     global drawscreen
     global running
     global blackscreen
 
-    # top clicks
-    if y < 100 and x > 500:
-        running = False
-    elif y < 100 and x < 100:
-        blackscreen = not(blackscreen)
-    # bottom right click
-    elif y > 400 and x > 700:
-        sound.play()
-        drawscreen += 1
-        if drawscreen > 4:
-            drawscreen = 1
+
+    # process click events in different ways if there is a popup
+    if POPUPACTIVE:
+        popupClick(x,y)
     else:
-        if drawscreen == 4:
-            processClickMenu(x,y)
+        # top clicks
+        if y < 100 and x > 500:
+            running = False
+        elif y < 100 and x < 100:
+            blackscreen = not(blackscreen)
+        # bottom right click
+        elif y > 400 and x > 700:
+            sound.play()
+            drawscreen += 1
+            if drawscreen > 4:
+                drawscreen = 1
+        else:
+            if drawscreen == 4:
+                processClickMenu(x,y)
 
 def menuScreen():
     textoffset = 15
@@ -130,6 +166,9 @@ def menuScreen():
     # column 3
     screen.blit(basicButton, (hor_offset+210+210, ver_offset))
     screen.blit(basicButton, (hor_offset+210+210, ver_offset+160))
+
+    if POPUPACTIVE:
+        showPopup()
 
 
 def displayValuePairScreen(title, names_values):
