@@ -3,6 +3,13 @@ import re
 import pygame
 import time
 
+# Colors
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+BLACK = (0, 0, 0)
+BLUE = (200, 200, 255)
+BLUE_UI = (100, 100, 255)
+
 # Initialize Pygame
 pygame.init()
 pygame.mixer.init()
@@ -17,13 +24,6 @@ image = pygame.image.load('DisplayTest.png')
 basicButton = pygame.image.load('BasicButtonTrans.png')
 # Scale the image to fit the window if necessary
 image = pygame.transform.scale(image, (width, height))
-
-# Colors
-WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-BLACK = (0, 0, 0)
-BLUE = (200, 200, 255)
-BLUE_UI = (100, 100, 255)
 
 salvage_data = [
     ("RMC - Orison", "10,800"),
