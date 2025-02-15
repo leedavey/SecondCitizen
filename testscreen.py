@@ -2,6 +2,7 @@ import requests
 import re
 import pygame
 import time
+from dataclasses import dataclass
 
 # Colors
 WHITE = (255, 255, 255)
@@ -9,11 +10,32 @@ GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 BLUE = (200, 200, 255)
 BLUE_UI = (100, 100, 255)
+hoffset = 60
+voffset = 95
 
+@dataclass
+class UIButton:
+    title: str
+    type: int
+    imgsrc: str
+    action: str
+    datainfo: str
+    x: int
+    y: int
+
+# testButton = UIButton("Lorville", 1, "lorville_sm.png", "", "100", 400, 200)
+
+@dataclass
+class ScreenConfig:
+    title: str
+    type: int
+    z: float = 0.0
+
+p = ScreenConfig("Menu", 1)
 
 # Popup modal
 POPUPACTIVE = False
-popupimg = pygame.image.load('Area18Map.png')
+popupimg = pygame.image.load('DisplayTest.png')
 
 # Initialize Pygame
 pygame.init()
@@ -62,6 +84,7 @@ ore_data = [
 # Font setup
 titlefont = pygame.font.Font(None, 60)
 datafont = pygame.font.Font(None, 48)
+optionsfont = pygame.font.Font(None, 32)
 
 # Last update time
 last_update = time.time()
@@ -103,12 +126,6 @@ def popupClick(x,y):
     POPUPACTIVE = False
 
 def processClickMenu(x, y):
-    global drawscreen
-    global menuShowPic
-
-    if y < 100 and x > 500:
-        running = False
-
     rect = pygame.Rect(hoffset + 10, voffset + 40, 200, 150)
     if rect.collidepoint(x,y):
         sound.play()
@@ -119,18 +136,18 @@ def processClick(x,y):
     global running
     global blackscreen
 
+    # always process top clicks quit on top right
+    if y < 100 and x > 500:
+        running = False
+    elif y < 100 and x < 100:
+        blackscreen = not(blackscreen)
 
     # process click events in different ways if there is a popup
     if POPUPACTIVE:
         popupClick(x,y)
     else:
-        # top clicks
-        if y < 100 and x > 500:
-            running = False
-        elif y < 100 and x < 100:
-            blackscreen = not(blackscreen)
         # bottom right click
-        elif y > 400 and x > 700:
+        if y > 400 and x > 700:
             sound.play()
             drawscreen += 1
             if drawscreen > 4:
@@ -139,41 +156,43 @@ def processClick(x,y):
             if drawscreen == 4:
                 processClickMenu(x,y)
 
+def drawButton(xpos, ypos, title, datainfo, imgsrc):
+    # start with the img
+    if (imgsrc != ""):
+        butimg = pygame.image.load(imgsrc)
+        screen.blit(butimg, (xpos, ypos))
+    # draw txt
+    if (title != ""):
+        button_text = optionsfont.render(title, True, WHITE)
+        screen.blit(button_text, (xpos+15,ypos+15))
+    if (datainfo != ""):
+        button_text = optionsfont.render(datainfo, True, WHITE)
+        screen.blit(button_text, (xpos+15,ypos+110))
+    # button overlay
+    screen.blit(basicButton, (xpos, ypos))
+
 def menuScreen():
     textoffset = 15
-    hor_offset = hoffset + 10
-    ver_offset = voffset + 40
     price_text = titlefont.render("Locations", True, BLUE)
-    screen.blit(price_text, (hor_offset,voffset-10))
-    optionsfont = pygame.font.Font(None, 32)
+    screen.blit(price_text, (hoffset,voffset-50))
 
-    area18 = pygame.image.load('Area18.png')
-    options_text = optionsfont.render("Area 18", True, WHITE)
-    screen.blit(area18, (hor_offset, ver_offset))
-    screen.blit(options_text, (hor_offset+textoffset,ver_offset+textoffset))
-    screen.blit(basicButton, (hor_offset, ver_offset))
-
-    area18 = pygame.image.load('Orison.png')
-    options_text = optionsfont.render("Orison", True, WHITE)
-    screen.blit(area18, (hor_offset, ver_offset+160))
-    screen.blit(options_text, (hor_offset+textoffset,ver_offset+160+textoffset))
-    screen.blit(basicButton, (hor_offset, ver_offset+160))
+    drawButton(hoffset, voffset, "Area 18", "", "Area18.png")
+    drawButton(hoffset, voffset+160, "Orison", "", "Orison.png")
 
     #column 2
-    screen.blit(basicButton, (hor_offset+210, ver_offset))
-    screen.blit(basicButton, (hor_offset+210, ver_offset+160))
+    drawButton(hoffset+210, voffset, "New Babbage", "", "NewBabbage_sm.png")
+    drawButton(hoffset+210, voffset+160, "Lorville", "", "Lorville_sm.png")
 
     # column 3
-    screen.blit(basicButton, (hor_offset+210+210, ver_offset))
-    screen.blit(basicButton, (hor_offset+210+210, ver_offset+160))
+    drawButton(hoffset+210+210, voffset, "Grim Hex", "", "")
+    drawButton(hoffset+210+210, voffset+160, "Pyro Gateway", "", "")
 
     if POPUPACTIVE:
         showPopup()
 
-
 def displayValuePairScreen(title, names_values):
     price_text = titlefont.render(title, True, BLUE)
-    screen.blit(price_text, (hoffset,voffset))
+    screen.blit(price_text, (hoffset,voffset-50))
 
     # Display names and values
     for i, (name, value) in enumerate(names_values):
@@ -183,8 +202,8 @@ def displayValuePairScreen(title, names_values):
         value_text = datafont.render(value, True, BLUE)
 
         # Position the texts on the screen
-        screen.blit(name_text, (hoffset, voffset + voffset + i * 50))  # Names on the left
-        screen.blit(value_text, (400, voffset + voffset + i * 50))  # Values on the right
+        screen.blit(name_text, (hoffset, voffset + i * 50))  # Names on the left
+        screen.blit(value_text, (400, voffset + i * 50))  # Values on the right
 
 while running:
     for event in pygame.event.get():
@@ -204,8 +223,6 @@ while running:
 #    pygame.mouse.set_visible(False)
     if not(blackscreen):
         pygame.mouse.set_visible(True)
-        hoffset = 60
-        voffset = 55
         screen.blit(image, (0, 0))
         if drawscreen == 1:
             displayValuePairScreen("Ship Prices", ship_data)
@@ -215,7 +232,6 @@ while running:
             displayValuePairScreen("Mining Prices", ore_data)
         elif drawscreen == 4:
             menuScreen()
-
 
         # FLAIR!!!!
         # Increase alpha for fade effect
