@@ -35,7 +35,7 @@ p = ScreenConfig("Menu", 1)
 
 # Popup modal
 POPUPACTIVE = False
-popupimg = pygame.image.load('DisplayTest.png')
+popupimg = pygame.image.load('SCBackground.png')
 
 # Initialize Pygame
 pygame.init()
