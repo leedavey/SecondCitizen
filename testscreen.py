@@ -60,13 +60,14 @@ main_menu_data = [
 ]
 
 salvage_data = [
-    ("RMC - Orison", "10,800"),
-    ("RMC - Area 18", "8,500"),
-    ("RMC - Lorville", "8,500"),
-    ("RMC - New Babbage", "8,500")
+    ("Terra Mills (Cellin)", "11,746"),
+    ("Orison", "10,800"),
+    ("Grim Hex", "9,265"),
+    ("Major Cities", "8,500"),
 ]
 
 ship_data = [
+    ("Corsair", "6,666K"),
     ("Freelancer MAX", "4,252K"),
     ("Cutlass Black", "2,116K"),
     ("Hull A", "1,701K"),
