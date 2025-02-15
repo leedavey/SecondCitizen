@@ -35,7 +35,7 @@ p = ScreenConfig("Menu", 1)
 
 # Popup modal
 POPUPACTIVE = False
-popupimg = pygame.image.load('SCBackground.png')
+popupimg = pygame.image.load('DisplayTest.png')
 
 # Initialize Pygame
 pygame.init()
@@ -47,7 +47,7 @@ width, height = 800, 480
 screen = pygame.display.set_mode((width, height),pygame.FULLSCREEN)
 pygame.display.set_caption('Test Screen Display')
 
-image = pygame.image.load('DisplayTest.png')
+image = pygame.image.load('SCBackground.png')
 basicButton = pygame.image.load('BasicButtonTrans.png')
 # Scale the image to fit the window if necessary
 image = pygame.transform.scale(image, (width, height))
