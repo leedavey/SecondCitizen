@@ -2,6 +2,7 @@ import requests
 import re
 import pygame
 import time
+import sc_data
 from dataclasses import dataclass
 
 # Colors
@@ -47,40 +48,12 @@ width, height = 800, 480
 screen = pygame.display.set_mode((width, height),pygame.FULLSCREEN)
 pygame.display.set_caption('Test Screen Display')
 
-image = pygame.image.load('SCBackground.png')
+background_image = pygame.image.load('SCBackground.png')
 basicButton = pygame.image.load('BasicButtonTrans.png')
+basicSmButton = pygame.image.load('BasicSmButton.png')
+
 # Scale the image to fit the window if necessary
-image = pygame.transform.scale(image, (width, height))
-
-main_menu_data = [
-    ("Locations", "10,800"),
-    ("Mining", "8,500"),
-    ("Salvage", "8,500"),
-    ("Ship Sales", "8,500")
-]
-
-salvage_data = [
-    ("Terra Mills (Cellin)", "11,746"),
-    ("Orison", "10,800"),
-    ("Grim Hex", "9,265"),
-    ("Major Cities", "8,500"),
-]
-
-ship_data = [
-    ("Corsair", "6,666K"),
-    ("Freelancer MAX", "4,252K"),
-    ("Cutlass Black", "2,116K"),
-    ("Hull A", "1,701K"),
-    ("Cutter", "635K")
-]
-
-ore_data = [
-    ("Gold", "2672"),
-    ("Beryl", "1148"),
-    ("Copper", "145"),
-    ("Laranite", "1172"),
-    ("Hadanite", "437k")
-]
+#image = pygame.transform.scale(image, (width, height))
 
 # Font setup
 titlefont = pygame.font.Font(None, 60)
@@ -105,7 +78,7 @@ fade_speed = 5  # How quickly to fade out (0-255 per frame)
 alpha = 255  # Start with fully transparent
 
 running = True
-drawscreen = 4
+drawscreen = 3
 blackscreen = False
 
 animAngle = 3.0
@@ -151,13 +124,27 @@ def processClick(x,y):
         if y > 400 and x > 700:
             sound.play()
             drawscreen += 1
-            if drawscreen > 4:
+            if drawscreen > 5:
                 drawscreen = 1
         else:
             if drawscreen == 4:
                 processClickMenu(x,y)
 
+def drawSmallButton(xpos, ypos, title, datainfo, color):
+    textoffset = 5
+    # button overlay
+    screen.blit(basicSmButton, (xpos, ypos))
+    # draw txt
+    if (title != ""):
+        button_text = optionsfont.render(title, True, color)
+        screen.blit(button_text, (xpos+textoffset,ypos+textoffset))
+    if (datainfo != ""):
+        button_text = optionsfont.render(datainfo, True, color)
+        screen.blit(button_text, (xpos+170-button_text.get_width(),ypos+110))
+    pass
+
 def drawButton(xpos, ypos, title, datainfo, imgsrc):
+    textoffset = 15
     # start with the img
     if (imgsrc != ""):
         butimg = pygame.image.load(imgsrc)
@@ -165,19 +152,18 @@ def drawButton(xpos, ypos, title, datainfo, imgsrc):
     # draw txt
     if (title != ""):
         button_text = optionsfont.render(title, True, WHITE)
-        screen.blit(button_text, (xpos+15,ypos+15))
+        screen.blit(button_text, (xpos+textoffset,ypos+textoffset))
     if (datainfo != ""):
         button_text = optionsfont.render(datainfo, True, WHITE)
-        screen.blit(button_text, (xpos+15,ypos+110))
+        screen.blit(button_text, (xpos+170-button_text.get_width(),ypos+110))
     # button overlay
     screen.blit(basicButton, (xpos, ypos))
 
 def menuScreen():
-    textoffset = 15
     price_text = titlefont.render("Locations", True, BLUE)
     screen.blit(price_text, (hoffset,voffset-50))
 
-    drawButton(hoffset, voffset, "Area 18", "", "Area18.png")
+    drawButton(hoffset, voffset, "Area 18", "Test asdf", "Area18.png")
     drawButton(hoffset, voffset+160, "Orison", "", "Orison.png")
 
     #column 2
@@ -194,6 +180,8 @@ def menuScreen():
 def displayValuePairScreen(title, names_values):
     price_text = titlefont.render(title, True, BLUE)
     screen.blit(price_text, (hoffset,voffset-50))
+
+#    drawSmallButton(200,400,"Gold","2672",WHITE)
 
     # Display names and values
     for i, (name, value) in enumerate(names_values):
@@ -224,15 +212,17 @@ while running:
 #    pygame.mouse.set_visible(False)
     if not(blackscreen):
         pygame.mouse.set_visible(True)
-        screen.blit(image, (0, 0))
+        screen.blit(background_image, (0, 0))
         if drawscreen == 1:
-            displayValuePairScreen("Ship Prices", ship_data)
+            displayValuePairScreen("Ship Prices", sc_data.ship_data)
         elif drawscreen == 2:
-            displayValuePairScreen("Salvage", salvage_data)
+            displayValuePairScreen("Salvage", sc_data.salvage_data)
         elif drawscreen == 3:
-            displayValuePairScreen("Mining Prices", ore_data)
+            displayValuePairScreen("Mining Prices", sc_data.ore_data)
         elif drawscreen == 4:
             menuScreen()
+        elif drawscreen == 5:
+            displayValuePairScreen("Roc Mining", sc_data.roc_mining_data)
 
         # FLAIR!!!!
         # Increase alpha for fade effect
