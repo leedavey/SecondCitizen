@@ -194,16 +194,19 @@ def displayValuePairScreen(title, names_values):
         screen.blit(value_text, (400, voffset + i * 50))  # Values on the right
 
 def drawHelperButtonScreen():
-    hmod = 180
-    sideoff = 50
-    vmod = 120
-    drawSmallButton(hoffset+hmod*0, 50, "Lights","", WHITE)
-    drawSmallButton(hoffset+hmod*1, 50, "","", WHITE)
-    drawSmallButton(hoffset+hmod*2, 50, "Transform","", WHITE)
-    drawSmallButton(hoffset+hmod*3, 50, "VTOL","", WHITE)
-    drawSmallButton(sideoff+hoffset+hmod*3, 100, "Mode","", WHITE)
-    drawSmallButton(sideoff+hoffset+hmod*3, 100+vmod, "ATC","", WHITE)
-    drawSmallButton(sideoff+hoffset+hmod*3, 100+vmod*2, "empty","", WHITE)
+    hmod = 200
+    sideoff = 30
+    vmod = 100
+    screen.fill(BLACK)
+    drawSmallButton(hoffset+hmod*0, 10, "Lights","", WHITE)
+    drawSmallButton(hoffset+hmod*1, 10, "","", WHITE)
+    drawSmallButton(hoffset+hmod*2, 10, "Trans","", WHITE)
+    drawSmallButton(hoffset+hmod*3, 10, "VTOL","", WHITE)
+    drawSmallButton(sideoff+hoffset+hmod*3, 150, "Mode","", WHITE)
+    drawSmallButton(sideoff+hoffset+hmod*3, 150+vmod, "ATC","", WHITE)
+    drawSmallButton(sideoff+hoffset+hmod*3, 150+vmod*2, "","", WHITE)
+    smallback = pygame.transform.scale(background_image, (800-120, 410))
+    screen.blit(smallback, (0, 70))
 
 while running:
     for event in pygame.event.get():
