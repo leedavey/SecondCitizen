@@ -131,7 +131,7 @@ def processClick(x,y):
                 processClickMenu(x,y)
 
 def drawSmallButton(xpos, ypos, title, datainfo, color):
-    textoffset = 10
+    textoffset = 15
     # button overlay
     screen.blit(basicSmButton, (xpos, ypos))
     # draw txt
