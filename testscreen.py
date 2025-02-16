@@ -78,7 +78,7 @@ fade_speed = 5  # How quickly to fade out (0-255 per frame)
 alpha = 255  # Start with fully transparent
 
 running = True
-drawscreen = 3
+drawscreen = 6
 blackscreen = False
 
 animAngle = 3.0
@@ -124,14 +124,14 @@ def processClick(x,y):
         if y > 400 and x > 700:
             sound.play()
             drawscreen += 1
-            if drawscreen > 5:
+            if drawscreen > 6:
                 drawscreen = 1
         else:
             if drawscreen == 4:
                 processClickMenu(x,y)
 
 def drawSmallButton(xpos, ypos, title, datainfo, color):
-    textoffset = 5
+    textoffset = 10
     # button overlay
     screen.blit(basicSmButton, (xpos, ypos))
     # draw txt
@@ -140,8 +140,7 @@ def drawSmallButton(xpos, ypos, title, datainfo, color):
         screen.blit(button_text, (xpos+textoffset,ypos+textoffset))
     if (datainfo != ""):
         button_text = optionsfont.render(datainfo, True, color)
-        screen.blit(button_text, (xpos+170-button_text.get_width(),ypos+110))
-    pass
+        screen.blit(button_text, (xpos+170-button_text.get_width(),ypos+40))
 
 def drawButton(xpos, ypos, title, datainfo, imgsrc):
     textoffset = 15
@@ -194,6 +193,18 @@ def displayValuePairScreen(title, names_values):
         screen.blit(name_text, (hoffset, voffset + i * 50))  # Names on the left
         screen.blit(value_text, (400, voffset + i * 50))  # Values on the right
 
+def drawHelperButtonScreen():
+    hmod = 180
+    sideoff = 50
+    vmod = 120
+    drawSmallButton(hoffset+hmod*0, 50, "Lights","", WHITE)
+    drawSmallButton(hoffset+hmod*1, 50, "","", WHITE)
+    drawSmallButton(hoffset+hmod*2, 50, "Transform","", WHITE)
+    drawSmallButton(hoffset+hmod*3, 50, "VTOL","", WHITE)
+    drawSmallButton(sideoff+hoffset+hmod*3, 100, "Mode","", WHITE)
+    drawSmallButton(sideoff+hoffset+hmod*3, 100+vmod, "ATC","", WHITE)
+    drawSmallButton(sideoff+hoffset+hmod*3, 100+vmod*2, "empty","", WHITE)
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -223,6 +234,8 @@ while running:
             menuScreen()
         elif drawscreen == 5:
             displayValuePairScreen("Roc Mining", sc_data.roc_mining_data)
+        elif drawscreen == 6:
+            drawHelperButtonScreen();
 
         # FLAIR!!!!
         # Increase alpha for fade effect
