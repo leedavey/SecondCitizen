@@ -199,12 +199,12 @@ def drawHelperButtonScreen():
     vmod = 100
     screen.fill(BLACK)
     drawSmallButton(hoffset+hmod*0, 10, "Lights","", WHITE)
-    drawSmallButton(hoffset+hmod*1, 10, "","", WHITE)
-    drawSmallButton(hoffset+hmod*2, 10, "Trans","", WHITE)
-    drawSmallButton(hoffset+hmod*3, 10, "VTOL","", WHITE)
+    drawSmallButton(hoffset+hmod*1, 10, "Trans","", WHITE)
+    drawSmallButton(hoffset+hmod*2, 10, "Scan","", WHITE)
+    drawSmallButton(hoffset+hmod*3, 10, "NAV","", WHITE)
     drawSmallButton(sideoff+hoffset+hmod*3, 150, "Mode","", WHITE)
     drawSmallButton(sideoff+hoffset+hmod*3, 150+vmod, "ATC","", WHITE)
-    drawSmallButton(sideoff+hoffset+hmod*3, 150+vmod*2, "","", WHITE)
+    drawSmallButton(sideoff+hoffset+hmod*3, 150+vmod*2, "Engine","", WHITE)
     smallback = pygame.transform.scale(background_image, (800-120, 410))
     screen.blit(smallback, (0, 70))
 
