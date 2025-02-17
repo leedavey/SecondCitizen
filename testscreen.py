@@ -50,7 +50,9 @@ pygame.display.set_caption('Test Screen Display')
 
 background_image = pygame.image.load('SCBackground.png')
 basicButton = pygame.image.load('BasicButtonTrans.png')
-basicSmButton = pygame.image.load('BasicSmButton.png')
+basicSmButton = pygame.image.load('BasicSmSqButton.png')
+basicSmHelperButton = pygame.transform.scale(basicSmButton, (120, 75))
+
 
 # Scale the image to fit the window if necessary
 #image = pygame.transform.scale(image, (width, height))
@@ -195,18 +197,18 @@ def displayValuePairScreen(title, names_values):
 
 def drawHelperButtonScreen():
     hmod = 200
-    sideoff = 30
-    vmod = 100
+    sideoff = 120
+    vmod = 120
     screen.fill(BLACK)
-    drawSmallButton(hoffset+hmod*0, 10, "Lights","", WHITE)
-    drawSmallButton(hoffset+hmod*1, 10, "Trans","", WHITE)
-    drawSmallButton(hoffset+hmod*2, 10, "Scan","", WHITE)
-    drawSmallButton(hoffset+hmod*3, 10, "NAV","", WHITE)
-    drawSmallButton(sideoff+hoffset+hmod*3, 150, "Mode","", WHITE)
-    drawSmallButton(sideoff+hoffset+hmod*3, 150+vmod, "ATC","", WHITE)
-    drawSmallButton(sideoff+hoffset+hmod*3, 150+vmod*2, "Engine","", WHITE)
-    smallback = pygame.transform.scale(background_image, (800-120, 410))
-    screen.blit(smallback, (0, 70))
+    drawSmallButton(hoffset+hmod*0, 0, "Lights","", WHITE)
+    drawSmallButton(hoffset+hmod*1, 0, "Trans","", WHITE)
+    drawSmallButton(hoffset+hmod*2, 0, "Scan","", WHITE)
+    drawSmallButton(hoffset+hmod*3, 0, "NAV","", WHITE)
+    drawSmallButton(800 - sideoff, 120, "Mode","", WHITE)
+    drawSmallButton(800 - sideoff, 120+vmod, "ATC","", WHITE)
+    drawSmallButton(800 - sideoff, 120+vmod*2, "Engine","", WHITE)
+    smallback = pygame.transform.scale(background_image, (800-120, 400))
+    screen.blit(smallback, (0, 75))
 
 while running:
     for event in pygame.event.get():
