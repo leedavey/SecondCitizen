@@ -134,6 +134,7 @@ def processClick(x,y):
 
 def drawSmallButton(xpos, ypos, title, datainfo, color):
     textoffset = 15
+    newlineoff = 26
     # button overlay
     screen.blit(basicSmButton, (xpos, ypos))
     # draw txt
@@ -142,7 +143,7 @@ def drawSmallButton(xpos, ypos, title, datainfo, color):
         screen.blit(button_text, (xpos+textoffset,ypos+textoffset))
     if (datainfo != ""):
         button_text = optionsfont.render(datainfo, True, color)
-        screen.blit(button_text, (xpos+170-button_text.get_width(),ypos+40))
+        screen.blit(button_text, (xpos+textoffset,ypos+textoffset+newlineoff))
 
 def drawButton(xpos, ypos, title, datainfo, imgsrc):
     textoffset = 15
@@ -201,12 +202,12 @@ def drawHelperButtonScreen():
     vmod = 120
     screen.fill(BLACK)
     drawSmallButton(hoffset+hmod*0, 0, "Lights","", WHITE)
-    drawSmallButton(hoffset+hmod*1, 0, "Trans","", WHITE)
-    drawSmallButton(hoffset+hmod*2, 0, "Scan","", WHITE)
-    drawSmallButton(hoffset+hmod*3, 0, "NAV","", WHITE)
-    drawSmallButton(800 - sideoff, 120, "Mode","", WHITE)
+    drawSmallButton(hoffset+hmod*1, 0, "VTOL","Trans", WHITE)
+    drawSmallButton(hoffset+hmod*2, 0, "Scan","Guns", WHITE)
+    drawSmallButton(hoffset+hmod*3, 0, "NAV","SCM", WHITE)
+    drawSmallButton(800 - sideoff, 120, "Mine","Salv", WHITE)
     drawSmallButton(800 - sideoff, 120+vmod, "ATC","", WHITE)
-    drawSmallButton(800 - sideoff, 120+vmod*2, "Engine","", WHITE)
+    drawSmallButton(800 - sideoff, 120+vmod*2, "Thruster", "Engines", WHITE)
     smallback = pygame.transform.scale(background_image, (800-120, 400))
     screen.blit(smallback, (0, 75))
 
