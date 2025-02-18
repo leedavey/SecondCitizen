@@ -14,6 +14,27 @@ BLUE_UI = (100, 100, 255)
 hoffset = 60
 voffset = 95
 
+helper_buttons_data = [
+    ("Lights", ""),
+    ("VTOL", "Trans"),
+    ("Scan", "Guns"),
+    ("SCM", "NAV"),
+    ("Mine", "Salv"),
+    ("ATC", ""),
+    ("Thruster", "Engine"),
+    ("blank", ""),
+    ("blank", ""),
+    ("blank", "")
+]
+images = {
+    'area18': pygame.image.load('Area18.png'),
+    'orison': pygame.image.load('Orison.png'),
+    'basic_button': pygame.image.load('BasicButtonTrans.png'),
+    'background_image_full': pygame.image.load('SCBackground.png'),
+    'basic_sm_button': pygame.image.load('BasicSmSqButton.png'),
+    'popupimg': pygame.image.load('Area18Map700.png')
+}
+
 @dataclass
 class UIButton:
     title: str
@@ -36,7 +57,6 @@ p = ScreenConfig("Menu", 1)
 
 # Popup modal
 POPUPACTIVE = False
-popupimg = pygame.image.load('DisplayTest.png')
 
 # Initialize Pygame
 pygame.init()
@@ -48,15 +68,6 @@ width, height = 800, 480
 screen = pygame.display.set_mode((width, height),pygame.FULLSCREEN)
 pygame.display.set_caption('Test Screen Display')
 
-background_image = pygame.image.load('SCBackground.png')
-basicButton = pygame.image.load('BasicButtonTrans.png')
-basicSmButton = pygame.image.load('BasicSmSqButton.png')
-basicSmHelperButton = pygame.transform.scale(basicSmButton, (120, 75))
-
-
-# Scale the image to fit the window if necessary
-#image = pygame.transform.scale(image, (width, height))
-
 # Font setup
 titlefont = pygame.font.Font(None, 60)
 datafont = pygame.font.Font(None, 48)
@@ -64,6 +75,7 @@ optionsfont = pygame.font.Font(None, 32)
 
 # Last update time
 last_update = time.time()
+last_rotate = time.time()
 
 # Create a clock object to control the frame rate
 clock = pygame.time.Clock()
@@ -90,7 +102,7 @@ menuShowPic = False
 def initPopup():
     global popupimg
     global POPUPACTIVE
-    popupimg = pygame.image.load('Area18Map700.png')
+#    popupimg = pygame.image.load('Area18Map700.png')
     POPUPACTIVE = True
 
 def showPopup():
@@ -101,6 +113,12 @@ def popupClick(x,y):
     global POPUPACTIVE
     POPUPACTIVE = False
 
+def next_screen():
+    global drawscreen
+    drawscreen += 1
+    if drawscreen > 6:
+        drawscreen = 1
+
 def processClickMenu(x, y):
     rect = pygame.Rect(hoffset + 10, voffset + 40, 200, 150)
     if rect.collidepoint(x,y):
@@ -108,9 +126,14 @@ def processClickMenu(x, y):
         initPopup()
 
 def processClick(x,y):
-    global drawscreen
     global running
     global blackscreen
+    global last_rotate
+    global last_update
+
+    blackscreen = False
+    last_update = time.time()
+    last_rotate = time.time()
 
     # always process top clicks quit on top right
     if y < 100 and x > 500:
@@ -125,9 +148,7 @@ def processClick(x,y):
         # bottom right click
         if y > 400 and x > 700:
             sound.play()
-            drawscreen += 1
-            if drawscreen > 6:
-                drawscreen = 1
+            next_screen()
         else:
             if drawscreen == 4:
                 processClickMenu(x,y)
@@ -136,7 +157,7 @@ def drawSmallButton(xpos, ypos, title, datainfo, color):
     textoffset = 15
     newlineoff = 26
     # button overlay
-    screen.blit(basicSmButton, (xpos, ypos))
+    screen.blit(images["basic_sm_button"], (xpos, ypos))
     # draw txt
     if (title != ""):
         button_text = optionsfont.render(title, True, color)
@@ -159,7 +180,7 @@ def drawButton(xpos, ypos, title, datainfo, imgsrc):
         button_text = optionsfont.render(datainfo, True, WHITE)
         screen.blit(button_text, (xpos+170-button_text.get_width(),ypos+110))
     # button overlay
-    screen.blit(basicButton, (xpos, ypos))
+    screen.blit(images["basic_button"], (xpos, ypos))
 
 def menuScreen():
     price_text = titlefont.render("Locations", True, BLUE)
@@ -201,15 +222,22 @@ def drawHelperButtonScreen():
     sideoff = 120
     vmod = 120
     screen.fill(BLACK)
-    drawSmallButton(hoffset+hmod*0, 0, "Lights","", WHITE)
-    drawSmallButton(hoffset+hmod*1, 0, "VTOL","Trans", WHITE)
-    drawSmallButton(hoffset+hmod*2, 0, "Scan","Guns", WHITE)
-    drawSmallButton(hoffset+hmod*3, 0, "NAV","SCM", WHITE)
-    drawSmallButton(800 - sideoff, 120, "Mine","Salv", WHITE)
-    drawSmallButton(800 - sideoff, 120+vmod, "ATC","", WHITE)
-    drawSmallButton(800 - sideoff, 120+vmod*2, "Thruster", "Engines", WHITE)
-    smallback = pygame.transform.scale(background_image, (800-120, 400))
-    screen.blit(smallback, (0, 75))
+    for i, (name1, name2) in enumerate(helper_buttons_data):
+        # across the top
+        if i < 4:
+            drawSmallButton(hoffset+hmod*i, 0, name1, name2, WHITE)
+        # down the right side
+        elif i > 3 and i < 7:
+            drawSmallButton(800 - sideoff, vmod * (i-3), name1, name2, WHITE)
+        # down the left side
+        else:
+            drawSmallButton(0, vmod * (i-6), name1, name2, WHITE)
+
+    smallback = pygame.transform.scale(images["background_image_full"], (800-120-120, 400))
+    screen.blit(smallback, (120, 75))
+
+def drawValuesScreen():
+    drawHelperButtonScreen()
 
 while running:
     for event in pygame.event.get():
@@ -222,14 +250,19 @@ while running:
             processClick(mousex, mousey)
 
     # Check if 5 minutes have passed
-    if time.time() - last_update > 600:  # 300 seconds = 5 minutes
-        last_update = time.time()
+    if time.time() - last_update > 300:  # 300 seconds = 5 minutes
+        # black screen every 5 mins
+        blackscreen = True
+        # would like this to rotate screens eventually
+    if time.time() - last_rotate > 120:  # 300 seconds = 5 minutes
+        last_rotate = time.time()
+        next_screen()
 
     # Drawing
 #    pygame.mouse.set_visible(False)
     if not(blackscreen):
         pygame.mouse.set_visible(True)
-        screen.blit(background_image, (0, 0))
+        screen.blit(images["background_image_full"], (0, 0))
         if drawscreen == 1:
             displayValuePairScreen("Ship Prices", sc_data.ship_data)
         elif drawscreen == 2:
@@ -239,7 +272,7 @@ while running:
         elif drawscreen == 4:
             menuScreen()
         elif drawscreen == 5:
-            displayValuePairScreen("Roc Mining", sc_data.roc_mining_data)
+            drawValuesScreen()
         elif drawscreen == 6:
             drawHelperButtonScreen();
 
