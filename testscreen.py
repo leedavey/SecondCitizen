@@ -217,7 +217,7 @@ def displayValuePairScreen(title, names_values):
         screen.blit(name_text, (hoffset, voffset + i * 50))  # Names on the left
         screen.blit(value_text, (400, voffset + i * 50))  # Values on the right
 
-def drawHelperButtonScreen():
+def drawHelperButtonScreen(left, right):
     hmod = 200
     sideoff = 120
     vmod = 120
@@ -228,13 +228,15 @@ def drawHelperButtonScreen():
             drawSmallButton(hoffset+hmod*i, 0, name1, name2, WHITE)
         # down the right side
         elif i > 3 and i < 7:
-            drawSmallButton(800 - sideoff, vmod * (i-3), name1, name2, WHITE)
+            if right > 0:
+                drawSmallButton(800 - sideoff, vmod * (i-3), name1, name2, WHITE)
         # down the left side
         else:
-            drawSmallButton(0, vmod * (i-6), name1, name2, WHITE)
+            if left > 0:
+                drawSmallButton(0, vmod * (i-6), name1, name2, WHITE)
 
-    smallback = pygame.transform.scale(images["background_image_full"], (800-120-120, 400))
-    screen.blit(smallback, (120, 75))
+    smallback = pygame.transform.scale(images["background_image_full"], (800-left-right, 400))
+    screen.blit(smallback, (left, 75))
 
 def drawValuesScreen():
     drawHelperButtonScreen()
@@ -274,7 +276,8 @@ while running:
         elif drawscreen == 5:
             drawValuesScreen()
         elif drawscreen == 6:
-            drawHelperButtonScreen();
+            # change to 120 if need left side
+            drawHelperButtonScreen(0, 120);
 
         # FLAIR!!!!
         # Increase alpha for fade effect
