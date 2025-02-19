@@ -5,6 +5,18 @@ import time
 import sc_data
 from dataclasses import dataclass
 
+class AppState:
+    def __init__(self):
+        self.screen = 4  # drawscreen
+        self.popup_active = False
+        self.blackscreen = False
+        self.running = True
+        self.anim_angle = 3.0
+        self.last_update = 0
+        self.last_rotate = 0
+
+state = AppState()
+
 # Colors
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
@@ -13,6 +25,10 @@ BLUE = (200, 200, 255)
 BLUE_UI = (100, 100, 255)
 hoffset = 60
 voffset = 95
+
+# Initialize Pygame
+pygame.init()
+pygame.mixer.init()
 
 helper_buttons_data = [
     ("Lights", ""),
@@ -26,13 +42,15 @@ helper_buttons_data = [
     ("blank", ""),
     ("blank", "")
 ]
-images = {
+
+assets = {
     'area18': pygame.image.load('Area18.png'),
     'orison': pygame.image.load('Orison.png'),
-    'basic_button': pygame.image.load('BasicButtonTrans.png'),
+    'basic_button_hollow': pygame.image.load('BasicButtonTrans.png'),
     'background_image_full': pygame.image.load('SCBackground.png'),
     'basic_sm_button': pygame.image.load('BasicSmSqButton.png'),
-    'popupimg': pygame.image.load('Area18Map700.png')
+    'popupimg': pygame.image.load('Area18Map700.png'),
+    'click_sound': pygame.mixer.Sound('ComputerBeep.wav')
 }
 
 @dataclass
@@ -58,10 +76,7 @@ p = ScreenConfig("Menu", 1)
 # Popup modal
 POPUPACTIVE = False
 
-# Initialize Pygame
-pygame.init()
-pygame.mixer.init()
-sound = pygame.mixer.Sound('ComputerBeep.wav')
+#sound = pygame.mixer.Sound('ComputerBeep.wav')
 
 # Set up the display
 width, height = 800, 480
@@ -91,11 +106,7 @@ square_rect = square_surface.get_rect(center=(308,473))
 fade_speed = 5  # How quickly to fade out (0-255 per frame)
 alpha = 255  # Start with fully transparent
 
-running = True
 drawscreen = 6
-blackscreen = False
-
-animAngle = 3.0
 
 menuShowPic = False
 
@@ -114,32 +125,26 @@ def popupClick(x,y):
     POPUPACTIVE = False
 
 def next_screen():
-    global drawscreen
-    drawscreen += 1
-    if drawscreen > 6:
-        drawscreen = 1
+    state.screen += 1
+    if state.screen > 6:
+        state.screen = 1
 
 def processClickMenu(x, y):
     rect = pygame.Rect(hoffset + 10, voffset + 40, 200, 150)
     if rect.collidepoint(x,y):
-        sound.play()
+        assets["click_sound"].play()
         initPopup()
 
 def processClick(x,y):
-    global running
-    global blackscreen
-    global last_rotate
-    global last_update
-
-    blackscreen = False
-    last_update = time.time()
-    last_rotate = time.time()
+    state.blackscreen = False
+    state.last_update = time.time()
+    state.last_rotate = time.time()
 
     # always process top clicks quit on top right
     if y < 100 and x > 500:
-        running = False
+        state.running = False
     elif y < 100 and x < 100:
-        blackscreen = not(blackscreen)
+        state.blackscreen = True
 
     # process click events in different ways if there is a popup
     if POPUPACTIVE:
@@ -147,7 +152,7 @@ def processClick(x,y):
     else:
         # bottom right click
         if y > 400 and x > 700:
-            sound.play()
+            assets["click_sound"].play()
             next_screen()
         else:
             if drawscreen == 4:
@@ -157,7 +162,7 @@ def drawSmallButton(xpos, ypos, title, datainfo, color):
     textoffset = 15
     newlineoff = 26
     # button overlay
-    screen.blit(images["basic_sm_button"], (xpos, ypos))
+    screen.blit(assets["basic_sm_button"], (xpos, ypos))
     # draw txt
     if (title != ""):
         button_text = optionsfont.render(title, True, color)
@@ -180,7 +185,7 @@ def drawButton(xpos, ypos, title, datainfo, imgsrc):
         button_text = optionsfont.render(datainfo, True, WHITE)
         screen.blit(button_text, (xpos+170-button_text.get_width(),ypos+110))
     # button overlay
-    screen.blit(images["basic_button"], (xpos, ypos))
+    screen.blit(assets["basic_button_hollow"], (xpos, ypos))
 
 def menuScreen():
     price_text = titlefont.render("Locations", True, BLUE)
@@ -235,16 +240,19 @@ def drawHelperButtonScreen(left, right):
             if left > 0:
                 drawSmallButton(0, vmod * (i-6), name1, name2, WHITE)
 
-    smallback = pygame.transform.scale(images["background_image_full"], (800-left-right, 400))
+    smallback = pygame.transform.scale(assets["background_image_full"], (800-left-right, 400))
     screen.blit(smallback, (left, 75))
 
 def drawValuesScreen():
-    drawHelperButtonScreen()
+    drawHelperButtonScreen(0, 120)
 
-while running:
+state.last_update = time.time()
+state.last_rotate = time.time()
+
+while state.running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            state.running = False
         elif event.type == pygame.FINGERDOWN:
             processClick(event.x*width, event.y*height)
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -252,30 +260,31 @@ while running:
             processClick(mousex, mousey)
 
     # Check if 5 minutes have passed
-    if time.time() - last_update > 300:  # 300 seconds = 5 minutes
+    if time.time() - state.last_update > 300:  # 300 seconds = 5 minutes
         # black screen every 5 mins
-        blackscreen = True
+        state.blackscreen = True
         # would like this to rotate screens eventually
-    if time.time() - last_rotate > 120:  # 300 seconds = 5 minutes
-        last_rotate = time.time()
-        next_screen()
+    if time.time() - state.last_rotate > 120:  # 300 seconds = 5 minutes
+        # do not rotate screen on buttonhelper
+        if state.screen != 6:
+            last_rotate = time.time()
+            next_screen()
 
     # Drawing
-#    pygame.mouse.set_visible(False)
-    if not(blackscreen):
+    if not(state.blackscreen):
         pygame.mouse.set_visible(True)
-        screen.blit(images["background_image_full"], (0, 0))
-        if drawscreen == 1:
+        screen.blit(assets["background_image_full"], (0, 0))
+        if state.screen == 1:
             displayValuePairScreen("Ship Prices", sc_data.ship_data)
-        elif drawscreen == 2:
+        elif state.screen == 2:
             displayValuePairScreen("Salvage", sc_data.salvage_data)
-        elif drawscreen == 3:
+        elif state.screen == 3:
             displayValuePairScreen("Mining Prices", sc_data.ore_data)
-        elif drawscreen == 4:
+        elif state.screen == 4:
             menuScreen()
-        elif drawscreen == 5:
+        elif state.screen == 5:
             drawValuesScreen()
-        elif drawscreen == 6:
+        elif state.screen == 6:
             # change to 120 if need left side
             drawHelperButtonScreen(0, 120);
 
@@ -289,12 +298,9 @@ while running:
         # Draw the fade surface over the screen
         screen.blit(square_surface, square_rect)
         screen.blit(square_surface, square_surface.get_rect(center=(252,473)))
-#        pygame.draw.arc(screen, BLUE, [750,400,50,50], animAngle, animAngle+1, 4)
-#        pygame.draw.rect(screen, GREEN, [200,100,10,10])
-        animAngle += 0.1
 
     else:
-        pygame.mouse.set_visible(False)
+        pygame.mouse.set_visible(True)
         screen.fill(BLACK)
 
     # Update the display
