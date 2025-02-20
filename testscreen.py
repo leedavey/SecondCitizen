@@ -11,7 +11,6 @@ class AppState:
         self.popup_active = False
         self.blackscreen = False
         self.running = True
-        self.anim_angle = 3.0
         self.last_update = 0
         self.last_rotate = 0
 
@@ -31,13 +30,16 @@ pygame.init()
 pygame.mixer.init()
 
 helper_buttons_data = [
+    # top row
     ("Lights", ""),
     ("VTOL", "Trans"),
     ("Scan", "Guns"),
     ("SCM", "NAV"),
+    # right side row
     ("Mine", "Salv"),
     ("ATC", ""),
     ("Thruster", "Engine"),
+    # left side row
     ("blank", ""),
     ("blank", ""),
     ("blank", "")
@@ -49,6 +51,7 @@ assets = {
     'basic_button_hollow': pygame.image.load('BasicButtonTrans.png'),
     'background_image_full': pygame.image.load('SCBackground.png'),
     'basic_sm_button': pygame.image.load('BasicSmSqButton.png'),
+    'basic_sm_label': pygame.image.load('BasicSmSqLabel.png'),
     'popupimg': pygame.image.load('Area18Map700.png'),
     'click_sound': pygame.mixer.Sound('ComputerBeep.wav')
 }
@@ -80,7 +83,7 @@ POPUPACTIVE = False
 
 # Set up the display
 width, height = 800, 480
-screen = pygame.display.set_mode((width, height),pygame.FULLSCREEN)
+pygamescreen = pygame.display.set_mode((width, height),pygame.FULLSCREEN)
 pygame.display.set_caption('Test Screen Display')
 
 # Font setup
@@ -117,8 +120,8 @@ def initPopup():
     POPUPACTIVE = True
 
 def showPopup():
-    global screen
-    screen.blit(popupimg, (50,20))
+    global pygamescreen
+    pygamescreen.blit(popupimg, (50,20))
 
 def popupClick(x,y):
     global POPUPACTIVE
@@ -162,34 +165,48 @@ def drawSmallButton(xpos, ypos, title, datainfo, color):
     textoffset = 15
     newlineoff = 26
     # button overlay
-    screen.blit(assets["basic_sm_button"], (xpos, ypos))
+    pygamescreen.blit(assets["basic_sm_button"], (xpos, ypos))
     # draw txt
     if (title != ""):
         button_text = optionsfont.render(title, True, color)
-        screen.blit(button_text, (xpos+textoffset,ypos+textoffset))
+        pygamescreen.blit(button_text, (xpos+textoffset,ypos+textoffset))
     if (datainfo != ""):
         button_text = optionsfont.render(datainfo, True, color)
-        screen.blit(button_text, (xpos+textoffset,ypos+textoffset+newlineoff))
+        pygamescreen.blit(button_text, (xpos+textoffset,ypos+textoffset+newlineoff))
+
+def drawSmallLabel(xpos, ypos, title, datainfo, color):
+    textoffset = 15
+    newlineoff = 26
+    # button overlay
+    pygamescreen.blit(assets["basic_sm_label"], (xpos, ypos))
+    # draw txt
+    if (title != ""):
+        button_text = optionsfont.render(title, True, color)
+        pygamescreen.blit(button_text, (xpos+textoffset,ypos+textoffset))
+    if (datainfo != ""):
+        button_text = optionsfont.render(datainfo, True, color)
+        pygamescreen.blit(button_text, (xpos+textoffset,ypos+textoffset+newlineoff))
 
 def drawButton(xpos, ypos, title, datainfo, imgsrc):
     textoffset = 15
     # start with the img
     if (imgsrc != ""):
         butimg = pygame.image.load(imgsrc)
-        screen.blit(butimg, (xpos, ypos))
+        pygamescreen.blit(butimg, (xpos, ypos))
     # draw txt
     if (title != ""):
         button_text = optionsfont.render(title, True, WHITE)
-        screen.blit(button_text, (xpos+textoffset,ypos+textoffset))
+        pygamescreen.blit(button_text, (xpos+textoffset,ypos+textoffset))
     if (datainfo != ""):
         button_text = optionsfont.render(datainfo, True, WHITE)
-        screen.blit(button_text, (xpos+170-button_text.get_width(),ypos+110))
+        pygamescreen.blit(button_text, (xpos+170-button_text.get_width(),ypos+110))
     # button overlay
-    screen.blit(assets["basic_button_hollow"], (xpos, ypos))
+    pygamescreen.blit(assets["basic_button_hollow"], (xpos, ypos))
 
 def menuScreen():
+    pygamescreen.blit(assets["background_image_full"], (0, 0))
     price_text = titlefont.render("Locations", True, BLUE)
-    screen.blit(price_text, (hoffset,voffset-50))
+    pygamescreen.blit(price_text, (hoffset,voffset-50))
 
     drawButton(hoffset, voffset, "Area 18", "Test asdf", "Area18.png")
     drawButton(hoffset, voffset+160, "Orison", "", "Orison.png")
@@ -206,8 +223,9 @@ def menuScreen():
         showPopup()
 
 def displayValuePairScreen(title, names_values):
+    pygamescreen.blit(assets["background_image_full"], (0, 0))
     price_text = titlefont.render(title, True, BLUE)
-    screen.blit(price_text, (hoffset,voffset-50))
+    pygamescreen.blit(price_text, (hoffset,voffset-50))
 
 #    drawSmallButton(200,400,"Gold","2672",WHITE)
 
@@ -219,14 +237,14 @@ def displayValuePairScreen(title, names_values):
         value_text = datafont.render(value, True, BLUE)
 
         # Position the texts on the screen
-        screen.blit(name_text, (hoffset, voffset + i * 50))  # Names on the left
-        screen.blit(value_text, (400, voffset + i * 50))  # Values on the right
+        pygamescreen.blit(name_text, (hoffset, voffset + i * 50))  # Names on the left
+        pygamescreen.blit(value_text, (400, voffset + i * 50))  # Values on the right
 
 def drawHelperButtonScreen(left, right):
     hmod = 200
     sideoff = 120
     vmod = 120
-    screen.fill(BLACK)
+    pygamescreen.fill(BLACK)
     for i, (name1, name2) in enumerate(helper_buttons_data):
         # across the top
         if i < 4:
@@ -241,10 +259,20 @@ def drawHelperButtonScreen(left, right):
                 drawSmallButton(0, vmod * (i-6), name1, name2, WHITE)
 
     smallback = pygame.transform.scale(assets["background_image_full"], (800-left-right, 400))
-    screen.blit(smallback, (left, 75))
+    pygamescreen.blit(smallback, (left, 75))
 
 def drawValuesScreen():
     drawHelperButtonScreen(0, 120)
+    vinc = 80
+    drawSmallLabel(hoffset,voffset+20+vinc*0,"Gold","2672",WHITE)
+    drawSmallLabel(hoffset,voffset+20+vinc*1,"Laranite","1294",WHITE)
+    drawSmallLabel(hoffset,voffset+20+vinc*2,"Agriculm","1294",WHITE)
+    drawSmallLabel(hoffset,voffset+20+vinc*3,"Beryl","1294",WHITE)
+
+    drawSmallLabel(hoffset+125,voffset+20+vinc*0,"Gold","2672",WHITE)
+    drawSmallLabel(hoffset+125,voffset+20+vinc*1,"Laranite","1294",WHITE)
+    drawSmallLabel(hoffset+125,voffset+20+vinc*2,"Agriculm","1294",WHITE)
+    drawSmallLabel(hoffset+125,voffset+20+vinc*3,"Beryl","1294",WHITE)
 
 state.last_update = time.time()
 state.last_rotate = time.time()
@@ -273,7 +301,6 @@ while state.running:
     # Drawing
     if not(state.blackscreen):
         pygame.mouse.set_visible(True)
-        screen.blit(assets["background_image_full"], (0, 0))
         if state.screen == 1:
             displayValuePairScreen("Ship Prices", sc_data.ship_data)
         elif state.screen == 2:
@@ -296,12 +323,12 @@ while state.running:
         # Set the alpha of the fade surface
         square_surface.set_alpha(abs(alpha))
         # Draw the fade surface over the screen
-        screen.blit(square_surface, square_rect)
-        screen.blit(square_surface, square_surface.get_rect(center=(252,473)))
+        pygamescreen.blit(square_surface, square_rect)
+        pygamescreen.blit(square_surface, square_surface.get_rect(center=(252,473)))
 
     else:
-        pygame.mouse.set_visible(True)
-        screen.fill(BLACK)
+        pygame.mouse.set_visible(False)
+        pygamescreen.fill(BLACK)
 
     # Update the display
     pygame.display.flip()
