@@ -20,6 +20,13 @@ ship_data = [
     ("Cutter", "635K")
 ]
 
+ship_data2 = [
+    ("S.Lancer", "8,800K"),
+    ("Zeus CL", "6,804K"),
+    ("Zeus ES", "4,422K"),
+    ("300i", "1.376K")
+]
+
 ore_data = [
     ("Gold", "2672"),
     ("Beryl", "1148"),

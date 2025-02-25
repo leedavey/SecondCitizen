@@ -161,11 +161,11 @@ def processClick(x,y):
             if drawscreen == 4:
                 processClickMenu(x,y)
 
-def drawSmallButton(xpos, ypos, title, datainfo, color):
+def drawSmallAsset(item, xpos, ypos, title, datainfo, color):
     textoffset = 15
     newlineoff = 26
     # button overlay
-    pygamescreen.blit(assets["basic_sm_button"], (xpos, ypos))
+    pygamescreen.blit(item, (xpos, ypos))
     # draw txt
     if (title != ""):
         button_text = optionsfont.render(title, True, color)
@@ -174,18 +174,11 @@ def drawSmallButton(xpos, ypos, title, datainfo, color):
         button_text = optionsfont.render(datainfo, True, color)
         pygamescreen.blit(button_text, (xpos+textoffset,ypos+textoffset+newlineoff))
 
+def drawSmallButton(xpos, ypos, title, datainfo, color):
+    drawSmallAsset(assets["basic_sm_button"], xpos, ypos, title, datainfo, color)
+
 def drawSmallLabel(xpos, ypos, title, datainfo, color):
-    textoffset = 15
-    newlineoff = 26
-    # button overlay
-    pygamescreen.blit(assets["basic_sm_label"], (xpos, ypos))
-    # draw txt
-    if (title != ""):
-        button_text = optionsfont.render(title, True, color)
-        pygamescreen.blit(button_text, (xpos+textoffset,ypos+textoffset))
-    if (datainfo != ""):
-        button_text = optionsfont.render(datainfo, True, color)
-        pygamescreen.blit(button_text, (xpos+textoffset,ypos+textoffset+newlineoff))
+    drawSmallAsset(assets["basic_sm_label"], xpos, ypos, title, datainfo, color)
 
 def drawButton(xpos, ypos, title, datainfo, imgsrc):
     textoffset = 15
@@ -273,6 +266,9 @@ def drawValuesScreen():
     drawSmallLabel(hoffset+125,voffset+20+vinc*1,"Laranite","1294",WHITE)
     drawSmallLabel(hoffset+125,voffset+20+vinc*2,"Agriculm","1294",WHITE)
     drawSmallLabel(hoffset+125,voffset+20+vinc*3,"Beryl","1294",WHITE)
+
+    for i, (name, value) in enumerate(sc_data.ship_data2):
+        drawSmallLabel(hoffset+250,voffset+20+vinc*i, name, value, WHITE)
 
 state.last_update = time.time()
 state.last_rotate = time.time()
