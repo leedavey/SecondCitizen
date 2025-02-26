@@ -270,6 +270,9 @@ def drawValuesScreen():
     for i, (name, value) in enumerate(sc_data.ship_data2):
         drawSmallLabel(hoffset+250,voffset+20+vinc*i, name, value, WHITE)
 
+    for i, (name, value) in enumerate(sc_data.ship_data2):
+        drawSmallLabel(hoffset+375,voffset+20+vinc*i, name, value, WHITE)
+
 state.last_update = time.time()
 state.last_rotate = time.time()
 

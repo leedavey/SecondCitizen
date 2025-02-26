@@ -39,3 +39,19 @@ roc_mining_data = [
     ("Aphorite", "127"),
     ("Dolivine", "93")
 ]
+
+commodity_sell_data = [
+    ("Agricium", "1035"),
+    ("Beryl", "1148"),
+    ("Borase", "1351"),
+    ("Bexalite", "3323"),
+    ("Copper", "145"),
+    ("Corundum", "161"),
+    ("Gold", "2673"),
+    ("Hephaestanite", "1122"),
+    ("Iron", "159"),
+    ("Laranite", "1172"),
+    ("Quantanium", "12146"),
+    ("Quartz", "158"),
+    ("Taranite", "3940")
+]
