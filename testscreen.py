@@ -196,7 +196,7 @@ def drawButton(xpos, ypos, title, datainfo, imgsrc):
     # button overlay
     pygamescreen.blit(assets["basic_button_hollow"], (xpos, ypos))
 
-def menuScreen():
+def menuScreen2():
     pygamescreen.blit(assets["background_image_full"], (0, 0))
     price_text = titlefont.render("Locations", True, BLUE)
     pygamescreen.blit(price_text, (hoffset,voffset-50))
@@ -214,24 +214,6 @@ def menuScreen():
 
     if POPUPACTIVE:
         showPopup()
-
-def displayValuePairScreen(title, names_values):
-    pygamescreen.blit(assets["background_image_full"], (0, 0))
-    price_text = titlefont.render(title, True, BLUE)
-    pygamescreen.blit(price_text, (hoffset,voffset-50))
-
-#    drawSmallButton(200,400,"Gold","2672",WHITE)
-
-    # Display names and values
-    for i, (name, value) in enumerate(names_values):
-        # Render text for name
-        name_text = datafont.render(name, True, BLUE)
-        # Render text for value
-        value_text = datafont.render(value, True, BLUE)
-
-        # Position the texts on the screen
-        pygamescreen.blit(name_text, (hoffset, voffset + i * 50))  # Names on the left
-        pygamescreen.blit(value_text, (400, voffset + i * 50))  # Values on the right
 
 def drawHelperButtonScreen(left, right):
     hmod = 200
@@ -253,6 +235,38 @@ def drawHelperButtonScreen(left, right):
 
     smallback = pygame.transform.scale(assets["background_image_full"], (800-left-right, 400))
     pygamescreen.blit(smallback, (left, 75))
+
+def menuScreen():
+    drawHelperButtonScreen(0,120)
+
+    yy = 15
+
+    drawButton(hoffset-25, voffset+yy, "Area 18", "Test asdf", "Area18.png")
+    drawButton(hoffset-25, voffset+160+yy, "Orison", "", "Orison.png")
+
+    #column 2
+    drawButton(hoffset+210-25, voffset+yy, "New Babbage", "", "NewBabbage_sm.png")
+    drawButton(hoffset+210-25, voffset+160+yy, "Lorville", "", "Lorville_sm.png")
+
+    # column 3
+    drawButton(hoffset+210+210-25, voffset+yy, "Grim Hex", "", "")
+    drawButton(hoffset+210+210-25, voffset+160+yy, "Pyro Gateway", "", "")
+
+    if POPUPACTIVE:
+        showPopup()
+
+def displayValuePairScreen(title, names_values):
+    drawHelperButtonScreen(0,120)
+    # Display names and values
+    for i, (name, value) in enumerate(names_values):
+        # Render text for name
+        name_text = datafont.render(name, True, BLUE)
+        # Render text for value
+        value_text = datafont.render(value, True, BLUE)
+
+        # Position the texts on the screen
+        pygamescreen.blit(name_text, (hoffset, voffset +20+ i * 50))  # Names on the left
+        pygamescreen.blit(value_text, (400, voffset + 20+ i * 50))  # Values on the right
 
 def drawValuesScreen():
     drawHelperButtonScreen(0, 120)
@@ -291,10 +305,10 @@ while state.running:
         # black screen every 5 mins
         state.blackscreen = True
         # would like this to rotate screens eventually
-    if time.time() - state.last_rotate > 120:  # 300 seconds = 5 minutes
+    if time.time() - state.last_rotate > 5:  # 300 seconds = 5 minutes
         # do not rotate screen on buttonhelper
-        if state.screen != 6:
-            last_rotate = time.time()
+        if state.screen != 5:
+            state.last_rotate = time.time()
             next_screen()
 
     # Drawing
