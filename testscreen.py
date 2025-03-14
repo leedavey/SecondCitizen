@@ -46,13 +46,13 @@ helper_buttons_data = [
 ]
 
 assets = {
-    'area18': pygame.image.load('Area18.png'),
-    'orison': pygame.image.load('Orison.png'),
-    'basic_button_hollow': pygame.image.load('BasicButtonTrans.png'),
-    'background_image_full': pygame.image.load('SCBackground.png'),
-    'basic_sm_button': pygame.image.load('BasicSmSqButton.png'),
-    'basic_sm_label': pygame.image.load('BasicSmSqLabel.png'),
-    'popupimg': pygame.image.load('Area18Map700.png'),
+    'area18': pygame.image.load('images/Area18.png'),
+    'orison': pygame.image.load('images/Orison.png'),
+    'basic_button_hollow': pygame.image.load('images/BasicButtonTrans.png'),
+    'background_image_full': pygame.image.load('images/SCBackground.png'),
+    'basic_sm_button': pygame.image.load('images/BasicSmSqButton.png'),
+    'basic_sm_label': pygame.image.load('images/BasicSmSqLabel.png'),
+    'popupimg': pygame.image.load('images/Area18Map700.png'),
     'click_sound': pygame.mixer.Sound('ComputerBeep.wav')
 }
 
@@ -113,13 +113,10 @@ drawscreen = 6
 
 menuShowPic = False
 
-import pygame
-import math
-
 def initPopup():
     global popupimg
     global POPUPACTIVE
-#    popupimg = pygame.image.load('Area18Map700.png')
+#    popupimg = pygame.image.load('images/Area18Map700.png')
     POPUPACTIVE = True
 
 def showPopup():
@@ -138,7 +135,7 @@ def next_screen():
 def processClickMenu(x, y):
     rect = pygame.Rect(hoffset + 10, voffset + 40, 200, 150)
     if rect.collidepoint(x,y):
-        assets["click_sound"].play()
+#        assets["click_sound"].play()
         initPopup()
 
 def processClick(x,y):
@@ -204,12 +201,12 @@ def menuScreen2():
     price_text = titlefont.render("Locations", True, BLUE)
     pygamescreen.blit(price_text, (hoffset,voffset-50))
 
-    drawButton(hoffset, voffset, "Area 18", "Test asdf", "Area18.png")
-    drawButton(hoffset, voffset+160, "Orison", "", "Orison.png")
+    drawButton(hoffset, voffset, "Area 18", "Test asdf", "images/Area18.png")
+    drawButton(hoffset, voffset+160, "Orison", "", "images/Orison.png")
 
     #column 2
-    drawButton(hoffset+210, voffset, "New Babbage", "", "NewBabbage_sm.png")
-    drawButton(hoffset+210, voffset+160, "Lorville", "", "Lorville_sm.png")
+    drawButton(hoffset+210, voffset, "New Babbage", "", "images/NewBabbage_sm.png")
+    drawButton(hoffset+210, voffset+160, "Lorville", "", "images/Lorville_sm.png")
 
     # column 3
     drawButton(hoffset+210+210, voffset, "Grim Hex", "", "")
@@ -244,12 +241,12 @@ def menuScreen():
 
     yy = 15
 
-    drawButton(hoffset-25, voffset+yy, "Area 18", "Test asdf", "Area18.png")
-    drawButton(hoffset-25, voffset+160+yy, "Orison", "", "Orison.png")
+    drawButton(hoffset-25, voffset+yy, "Area 18", "Test asdf", "images/Area18.png")
+    drawButton(hoffset-25, voffset+160+yy, "Orison", "", "images/Orison.png")
 
     #column 2
-    drawButton(hoffset+210-25, voffset+yy, "New Babbage", "", "NewBabbage_sm.png")
-    drawButton(hoffset+210-25, voffset+160+yy, "Lorville", "", "Lorville_sm.png")
+    drawButton(hoffset+210-25, voffset+yy, "New Babbage", "", "images/NewBabbage_sm.png")
+    drawButton(hoffset+210-25, voffset+160+yy, "Lorville", "", "images/Lorville_sm.png")
 
     # column 3
     drawButton(hoffset+210+210-25, voffset+yy, "Grim Hex", "", "")
