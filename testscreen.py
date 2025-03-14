@@ -113,6 +113,56 @@ drawscreen = 6
 
 menuShowPic = False
 
+import pygame
+import math
+
+def draw_wedge_line(surface, color, start_pos, end_pos, start_width, end_width):
+    """
+    Draw a wedge-shaped line in Pygame.
+    
+    Args:
+        surface: The Pygame surface to draw on.
+        color: The color of the line (e.g., (255, 0, 0) for red).
+        start_pos: Tuple (x, y) for the starting point.
+        end_pos: Tuple (x, y) for the ending point.
+        start_width: Width of the line at the start point (in pixels).
+        end_width: Width of the line at the end point (in pixels).
+    """
+    # Extract coordinates
+    x1, y1 = start_pos
+    x2, y2 = end_pos
+    
+    # Calculate the direction vector of the line
+    dx = x2 - x1
+    dy = y2 - y1
+    length = math.sqrt(dx * dx + dy * dy)
+    
+    if length == 0:  # Avoid division by zero
+        return
+    
+    # Normalize the direction vector
+    dx /= length
+    dy /= length
+    
+    # Calculate perpendicular vectors for width (rotate 90 degrees)
+    perp_dx = -dy
+    perp_dy = dx
+    
+    # Calculate the four corners of the wedge
+    half_start_width = start_width / 2
+    half_end_width = end_width / 2
+    
+    # Start points (perpendicular to the line)
+    p1 = (x1 + perp_dx * half_start_width, y1 + perp_dy * half_start_width)
+    p2 = (x1 - perp_dx * half_start_width, y1 - perp_dy * half_start_width)
+    
+    # End points (perpendicular to the line)
+    p3 = (x2 - perp_dx * half_end_width, y2 - perp_dy * half_end_width)
+    p4 = (x2 + perp_dx * half_end_width, y2 + perp_dy * half_end_width)
+    
+    # Draw the wedge as a polygon
+    pygame.draw.polygon(surface, color, [p1, p2, p3, p4])
+
 def initPopup():
     global popupimg
     global POPUPACTIVE
@@ -287,6 +337,9 @@ def drawValuesScreen():
     for i, (name, value) in enumerate(sc_data.ship_data2):
         drawSmallLabel(hoffset+375,voffset+20+vinc*i, name, value, WHITE)
 
+    draw_wedge_line(pygamescreen, (255, 0, 0), (300, 300), (400, 400), 10, 10)
+
+
 state.last_update = time.time()
 state.last_rotate = time.time()
 
@@ -338,6 +391,14 @@ while state.running:
         # Draw the fade surface over the screen
         pygamescreen.blit(square_surface, square_rect)
         pygamescreen.blit(square_surface, square_surface.get_rect(center=(252,473)))
+
+        xu = 300
+        xl = 270
+        xw = 5
+        y = 300
+        yl = 30
+        pygame.draw.polygon(pygamescreen, BLUE, [(xu+xw,y), (xu-xw,y), (xl-xw,y+yl), (xl+xw,y+yl)])
+
 
     else:
         pygame.mouse.set_visible(False)
