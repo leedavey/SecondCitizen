@@ -13,6 +13,7 @@ class AppState:
         self.running = True
         self.last_update = 0
         self.last_rotate = 0
+        self.mute = True
 
 state = AppState()
 
@@ -116,7 +117,6 @@ menuShowPic = False
 def initPopup():
     global popupimg
     global POPUPACTIVE
-#    popupimg = pygame.image.load('images/Area18Map700.png')
     POPUPACTIVE = True
 
 def showPopup():
@@ -135,7 +135,8 @@ def next_screen():
 def processClickMenu(x, y):
     rect = pygame.Rect(hoffset + 10, voffset + 40, 200, 150)
     if rect.collidepoint(x,y):
-#        assets["click_sound"].play()
+        if not state.mute:
+            assets["click_sound"].play()
         initPopup()
 
 def processClick(x,y):
@@ -155,7 +156,8 @@ def processClick(x,y):
     else:
         # bottom right click
         if y > 400 and x > 700:
-            assets["click_sound"].play()
+            if not state.mute:
+                assets["click_sound"].play()
             next_screen()
         else:
             if drawscreen == 4:
@@ -271,21 +273,17 @@ def displayValuePairScreen(title, names_values):
 def drawValuesScreen():
     drawHelperButtonScreen(0, 120)
     vinc = 80
-    drawSmallLabel(hoffset,voffset+20+vinc*0,"Gold","2672",WHITE)
-    drawSmallLabel(hoffset,voffset+20+vinc*1,"Laranite","1294",WHITE)
-    drawSmallLabel(hoffset,voffset+20+vinc*2,"Agriculm","1294",WHITE)
-    drawSmallLabel(hoffset,voffset+20+vinc*3,"Beryl","1294",WHITE)
+    for i, (name, value) in enumerate(sc_data.commodity_sell_data):
+        drawSmallLabel(hoffset+(125*(i%4)),voffset+20+vinc*(int(i/4)), name, value, WHITE)
 
-    drawSmallLabel(hoffset+125,voffset+20+vinc*0,"Gold","2672",WHITE)
-    drawSmallLabel(hoffset+125,voffset+20+vinc*1,"Laranite","1294",WHITE)
-    drawSmallLabel(hoffset+125,voffset+20+vinc*2,"Agriculm","1294",WHITE)
-    drawSmallLabel(hoffset+125,voffset+20+vinc*3,"Beryl","1294",WHITE)
+#    for i, (name, value) in enumerate(sc_data.commodity_sell_data):
+#        drawSmallLabel(hoffset+125,voffset+20+vinc*(i%4), name, value, WHITE)
 
-    for i, (name, value) in enumerate(sc_data.ship_data2):
-        drawSmallLabel(hoffset+250,voffset+20+vinc*i, name, value, WHITE)
+#    for i, (name, value) in enumerate(sc_data.ship_data2):
+#        drawSmallLabel(hoffset+250,voffset+20+vinc*i, name, value, WHITE)
 
-    for i, (name, value) in enumerate(sc_data.ship_data2):
-        drawSmallLabel(hoffset+375,voffset+20+vinc*i, name, value, WHITE)
+#    for i, (name, value) in enumerate(sc_data.ship_data2):
+#        drawSmallLabel(hoffset+375,voffset+20+vinc*i, name, value, WHITE)
 
 
 state.last_update = time.time()

@@ -46,12 +46,12 @@ commodity_sell_data = [
     ("Borase", "1351"),
     ("Bexalite", "3323"),
     ("Copper", "145"),
-    ("Corundum", "161"),
+    ("Corundm", "161"),
     ("Gold", "2673"),
-    ("Hephaestanite", "1122"),
+    ("Hephaes", "1122"),
     ("Iron", "159"),
     ("Laranite", "1172"),
-    ("Quantanium", "12146"),
+    ("Quant", "12146"),
     ("Quartz", "158"),
     ("Taranite", "3940")
 ]
