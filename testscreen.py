@@ -26,6 +26,22 @@ BLUE_UI = (100, 100, 255)
 hoffset = 60
 voffset = 95
 
+buttonsize = 65
+lgbuttonsize = 120
+
+# UI rectangles
+UI_rect_data = [
+    ("ui_next", pygame.Rect(600, 400, buttonsize, buttonsize)),
+    ("ui_close", pygame.Rect(800-buttonsize, 0, buttonsize, buttonsize)),
+    ("ui_off", pygame.Rect(0, 0, buttonsize, buttonsize))
+]
+
+UI_options_rect_data = [
+    ("Off", pygame.Rect(50, voffset+20, lgbuttonsize, lgbuttonsize)),
+    ("Power", pygame.Rect(350, voffset+20, lgbuttonsize, lgbuttonsize)),
+    ("Mute", pygame.Rect(200, voffset+20, lgbuttonsize, lgbuttonsize))
+]
+
 # Initialize Pygame
 pygame.init()
 pygame.mixer.init()
@@ -33,7 +49,7 @@ pygame.mixer.init()
 helper_buttons_data = [
     # top row
     ("Lights", ""),
-    ("VTOL", "Trans"),
+    ("VTOL", "Config"),
     ("Scan", "Guns"),
     ("SCM", "NAV"),
     # right side row
@@ -127,6 +143,21 @@ def popupClick(x,y):
     global POPUPACTIVE
     POPUPACTIVE = False
 
+def optionsScreenClick(x,y):
+    clickedOn = ""
+    for i,(name, uirect) in enumerate(UI_options_rect_data):
+        if uirect.collidepoint(x,y):
+            clickedOn = name
+    if clickedOn == "Off":
+        state.blackscreen = True
+    elif clickedOn == "Power":
+        state.running = False
+    elif clickedOn == "Mute":
+        state.mute = not state.mute
+    else:
+        pass
+     
+
 def next_screen():
     state.screen += 1
     if state.screen > 6:
@@ -144,21 +175,29 @@ def processClick(x,y):
     state.last_update = time.time()
     state.last_rotate = time.time()
 
+    clickedOn = ""
+    for i,(name, uirect) in enumerate(UI_rect_data):
+        if uirect.collidepoint(x,y):
+            clickedOn = name
+
+    print(clickedOn)
+
     # always process top clicks quit on top right
-    if y < 100 and x > 500:
+    if clickedOn == "ui_close":
         state.running = False
-    elif y < 100 and x < 100:
+    elif clickedOn == "ui_off":
         state.blackscreen = True
+    elif clickedOn == "ui_next":
+        if not state.mute:
+            assets["click_sound"].play()
+        next_screen()
 
     # process click events in different ways if there is a popup
-    if POPUPACTIVE:
-        popupClick(x,y)
+    if state.screen == 2:
+        optionsScreenClick(x,y)
     else:
-        # bottom right click
-        if y > 400 and x > 700:
-            if not state.mute:
-                assets["click_sound"].play()
-            next_screen()
+        if POPUPACTIVE:
+            popupClick(x,y)
         else:
             if drawscreen == 4:
                 processClickMenu(x,y)
@@ -238,6 +277,11 @@ def drawHelperButtonScreen(left, right):
     smallback = pygame.transform.scale(assets["background_image_full"], (800-left-right, 400))
     pygamescreen.blit(smallback, (left, 75))
 
+def optionsScreenDraw():
+    drawHelperButtonScreen(0,120)
+    for i,(name, uirect) in enumerate(UI_options_rect_data):
+        pygame.draw.rect(pygamescreen, WHITE, uirect)
+
 def menuScreen():
     drawHelperButtonScreen(0,120)
 
@@ -270,21 +314,11 @@ def displayValuePairScreen(title, names_values):
         pygamescreen.blit(name_text, (hoffset, voffset +20+ i * 50))  # Names on the left
         pygamescreen.blit(value_text, (400, voffset + 20+ i * 50))  # Values on the right
 
-def drawValuesScreen():
+def drawValuesScreen(drawData):
     drawHelperButtonScreen(0, 120)
     vinc = 80
-    for i, (name, value) in enumerate(sc_data.commodity_sell_data):
-        drawSmallLabel(hoffset+(125*(i%4)),voffset+20+vinc*(int(i/4)), name, value, WHITE)
-
-#    for i, (name, value) in enumerate(sc_data.commodity_sell_data):
-#        drawSmallLabel(hoffset+125,voffset+20+vinc*(i%4), name, value, WHITE)
-
-#    for i, (name, value) in enumerate(sc_data.ship_data2):
-#        drawSmallLabel(hoffset+250,voffset+20+vinc*i, name, value, WHITE)
-
-#    for i, (name, value) in enumerate(sc_data.ship_data2):
-#        drawSmallLabel(hoffset+375,voffset+20+vinc*i, name, value, WHITE)
-
+    for i, (name, value) in enumerate(drawData):
+        drawSmallLabel(hoffset+(125*(i%4)),voffset+10+vinc*(int(i/4)), name, value, WHITE)
 
 state.last_update = time.time()
 state.last_rotate = time.time()
@@ -314,15 +348,15 @@ while state.running:
     if not(state.blackscreen):
         pygame.mouse.set_visible(True)
         if state.screen == 1:
-            displayValuePairScreen("Ship Prices", sc_data.ship_data)
+            drawValuesScreen(sc_data.ship_data)
         elif state.screen == 2:
-            displayValuePairScreen("Salvage", sc_data.salvage_data)
+            optionsScreenDraw()
         elif state.screen == 3:
             displayValuePairScreen("Mining Prices", sc_data.ore_data)
         elif state.screen == 4:
             menuScreen()
         elif state.screen == 5:
-            drawValuesScreen()
+            drawValuesScreen(sc_data.commodity_sell_data)
         elif state.screen == 6:
             # change to 120 if need left side
             drawHelperButtonScreen(0, 120);
@@ -346,6 +380,9 @@ while state.running:
         for i in range(int(bars / 2)+1):
             pygame.draw.polygon(pygamescreen, BLUE, [(xu+xw,y), (xu-xw,y), (xu+yl-xw,y+yl), (xu+yl+xw,y+yl)])
             xu = xu + 20
+
+        for i,(name, uirect) in enumerate(UI_rect_data):
+            pygame.draw.rect(pygamescreen, WHITE, uirect)
 
     else:
         pygame.mouse.set_visible(False)
