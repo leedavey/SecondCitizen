@@ -4,6 +4,8 @@ import pygame
 import time
 import sc_data
 from dataclasses import dataclass
+from bs4 import BeautifulSoup
+
 
 class AppState:
     def __init__(self):
@@ -13,6 +15,7 @@ class AppState:
         self.running = True
         self.last_update = 0
         self.last_rotate = 0
+        self.last_dataupdate = 0
         self.mute = True
 
 state = AppState()
@@ -100,13 +103,15 @@ POPUPACTIVE = False
 
 # Set up the display
 width, height = 800, 480
-pygamescreen = pygame.display.set_mode((width, height),pygame.FULLSCREEN)
+#pygamescreen = pygame.display.set_mode((width, height),pygame.FULLSCREEN)
+pygamescreen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('Test Screen Display')
 
 # Font setup
 titlefont = pygame.font.Font(None, 60)
 datafont = pygame.font.Font(None, 48)
-optionsfont = pygame.font.Font(None, 32)
+optionsfont = pygame.font.Font(None, 24)
+optionsfont = pygame.font.Font(None, 24)
 
 # Last update time
 last_update = time.time()
@@ -320,8 +325,56 @@ def drawValuesScreen(drawData):
     for i, (name, value) in enumerate(drawData):
         drawSmallLabel(hoffset+(125*(i%4)),voffset+10+vinc*(int(i/4)), name, value, WHITE)
 
+def get_lorville_ships_prices_dict():
+    url = "https://scfocus.org/ship-sale-rental-locations-history/"
+    try:
+        # Send HTTP request
+        response = requests.get(url)
+        response.raise_for_status()  # Check for request errors
+
+        # Parse HTML content
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Find the table containing ship prices for New Deal - Lorville
+        lorville_section = soup.find('h3', text=re.compile('New Deal - Lorville'))
+        if not lorville_section:
+            return {"error": "New Deal - Lorville section not found"}
+
+        # Get the next table after the Lorville section
+        table = lorville_section.find_next('table')
+        if not table:
+            return {"error": "Price table not found"}
+
+# Extract ship names and prices into a list of tuples
+        ships_prices = []
+        for row in table.find_all('tr'):
+            cells = row.find_all('td')
+            if len(cells) >= 2:  # Ensure row has ship name and price
+                ship_name = cells[0].text.strip()
+                price_str = cells[1].text.strip().replace(',', '')  # Remove commas from price
+                try:
+                    price_auec = int(price_str)
+                    price_thousands = price_auec / 1000
+                    # Format with commas if >= 999k, append 'K' (uppercase)
+                    formatted_price = f"{price_thousands:,.0f}K" if price_thousands >= 999 else f"{price_thousands:.0f}K"
+                    ships_prices.append((ship_name, formatted_price))
+                except ValueError:
+                    ships_prices.append((ship_name, "Error parsing price"))
+
+        return ships_prices if ships_prices else [("error", "No ships found in the Lorville table")]
+    
+    except requests.RequestException as e:
+        return {"error": f"Error fetching the webpage: {e}"}
+    except Exception as e:
+        return {"error": f"An unexpected error occurred: {e}"}
+
+ships_dict = get_lorville_ships_prices_dict()
+print("Ships and their prices at New Deal - Lorville (in thousands of aUEC):")
+
 state.last_update = time.time()
 state.last_rotate = time.time()
+state.last_dataupdate = time.time()
+
 
 while state.running:
     for event in pygame.event.get():
@@ -337,18 +390,15 @@ while state.running:
     if time.time() - state.last_update > 300:  # 300 seconds = 5 minutes
         # black screen every 5 mins
         state.blackscreen = True
-        # would like this to rotate screens eventually
-    if time.time() - state.last_rotate > 5:  # 300 seconds = 5 minutes
-        # do not rotate screen on buttonhelper
-        if state.screen != 5:
-            state.last_rotate = time.time()
-            next_screen()
+#    if time.time() - state.last_dataupdate > 300:  # 300 seconds = 5 minutes
+        # black screen every 5 mins
+#        state.blackscreen = True
 
     # Drawing
     if not(state.blackscreen):
         pygame.mouse.set_visible(True)
         if state.screen == 1:
-            drawValuesScreen(sc_data.ship_data)
+            drawValuesScreen(ships_dict)
         elif state.screen == 2:
             optionsScreenDraw()
         elif state.screen == 3:
